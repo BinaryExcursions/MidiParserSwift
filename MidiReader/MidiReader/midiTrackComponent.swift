@@ -7,6 +7,7 @@
 
 import Foundation
 
+let META_EVENT_IDENFIFIER:UInt8 = 0xFF
 let MIDI_TRK_VALUE:UInt32 = 0x4D54726B //This is MTrk
 
 class MidiEventNote
@@ -67,6 +68,17 @@ class MidiTrack
 			guard newValue == MIDI_TRK_VALUE else{return}
 			m_TrackBlockTitle = newValue
 		}
+	}
+	
+	func appendEvent(event:MidiEvent)
+	{
+		m_TrackEvents.append(event)
+	}
+	
+	subscript(index:Int) -> MidiEvent? {
+		guard (index >= 0) && (index < m_TrackEvents.count) else {return nil}
+		
+		return m_TrackEvents[index]
 	}
 
 

@@ -30,7 +30,7 @@ enum TrackEventType {
 	META_EVENT
 }
 
-enum MetaEventDefinitions:UInt16 {
+enum MetaEventDefinitions:UInt16, CaseIterable {
 	case UNKNOWN = 0x0000,
 	SEQUENCE_NUMBER = 0xFF00, //Will be followed by 02 then the sequence number
 	TEXT_INFO = 0xFF01, //Followed by LEN, TEXT. NOTE: The 0xFF01 - 0xFF0F are all reserved for text messages.
@@ -368,46 +368,46 @@ enum MidiInstrumentGeneralFamily:UInt8 {
 		  INST_FAMILY_ETHNIC,
 		  INST_FAMILY_PERCUSSIVE,
 		  INST_FAMILY_SOUND_EFFECTS
+}
 
-	func valueToGeneralFamily(familyValue:UInt8) -> MidiInstrumentGeneralFamily
-	{
-		switch(familyValue) {
-			case 1...8:
-				return .INST_FAMILY_PIANO
-			case 9...16:
-				return .INST_FAMILY_CHROMATIC_PRECUSSION
-			case 17...24:
-				return .INST_FAMILY_ORGAN
-			case 25...32:
-				return .INST_FAMILY_GUITAR
-			case 33...40:
-				return .INST_FAMILY_BASS
-			case 41...48:
-				return .INST_FAMILY_STRINGS
-			case 49...56:
-				return .INST_FAMILY_ENSENBLE
-			case 57...64:
-				return .INST_FAMILY_BRASS
-			case 65...72:
-				return .INST_FAMILY_REED
-			case 73...80:
-				return .INST_FAMILY_PIPE
-			case 81...88:
-				return .INST_FAMILY_SYNTH_LEAD
-			case 89...96:
-				return .INST_FAMILY_SYNTH_PAD
-			case 97...104:
-				return .INST_FAMILY_SYNTH_EFFECTS
-			case 105...112:
-				return .INST_FAMILY_ETHNIC
-			case 113...120:
-				return .INST_FAMILY_PERCUSSIVE
-			case 121...128:
-				return .INST_FAMILY_SOUND_EFFECTS
-			default:
-				return .INST_FAMILY_PIANO
-		}//End switch
-	}
+func valueToGeneralFamily(familyValue:UInt8) -> MidiInstrumentGeneralFamily
+{
+	switch(familyValue) {
+		case 1...8:
+			return .INST_FAMILY_PIANO
+		case 9...16:
+			return .INST_FAMILY_CHROMATIC_PRECUSSION
+		case 17...24:
+			return .INST_FAMILY_ORGAN
+		case 25...32:
+			return .INST_FAMILY_GUITAR
+		case 33...40:
+			return .INST_FAMILY_BASS
+		case 41...48:
+			return .INST_FAMILY_STRINGS
+		case 49...56:
+			return .INST_FAMILY_ENSENBLE
+		case 57...64:
+			return .INST_FAMILY_BRASS
+		case 65...72:
+			return .INST_FAMILY_REED
+		case 73...80:
+			return .INST_FAMILY_PIPE
+		case 81...88:
+			return .INST_FAMILY_SYNTH_LEAD
+		case 89...96:
+			return .INST_FAMILY_SYNTH_PAD
+		case 97...104:
+			return .INST_FAMILY_SYNTH_EFFECTS
+		case 105...112:
+			return .INST_FAMILY_ETHNIC
+		case 113...120:
+			return .INST_FAMILY_PERCUSSIVE
+		case 121...128:
+			return .INST_FAMILY_SOUND_EFFECTS
+		default:
+			return .INST_FAMILY_PIANO
+	}//End switch
 }
 
 //From Appendix 1.4 table 2
@@ -541,270 +541,270 @@ enum MidiInstrumentPatch:UInt16, CaseIterable {
 	HELICOPTER,
 	APPLAUSE,
 	GUNSHOT
-	
-	func valueToInstrumentPatch(patchValue:UInt16) -> MidiInstrumentPatch
-	{
-		switch(patchValue) {
-			case 1:
-				return .ACOUSTIC_GRAND_PIANO
-			case 2:
-				return .BRIGHT_ACOUSTIC_PIANO
-			case 3:
-				return .ELECTRIC_GRAND_PIANO
-			case 4:
-				return .HONKY_TONK_PIANO
-			case 5:
-				return .ELECTRIC_PIANO_1_RHODES_PIANO
-			case 6:
-				return .ELECTRIC_PIANO_2_CHORUSED_PIANO
-			case 7:
-				return .HARPSICHORD
-			case 8:
-				return .CLAVINET
-			case 9:
-				return .CELESTA
-			case 10:
-				return .GLOCKENSPIEL
-			case 11:
-				return .MUSIC_BOX
-			case 12:
-				return .VIBRAPHONE
-			case 13:
-				return .MARIMBA
-			case 14:
-				return .XYLOPHONE
-			case 15:
-				return .TUBULAR_BELLS
-			case 16:
-				return .DULCIMER_SANTUR
-			case 17:
-				return .DRAWBAR_ORGAN_HAMMOND
-			case 18:
-				return .PERCUSSIVE_ORGAN
-			case 19:
-				return .ROCK_ORGAN
-			case 20:
-				return .CHURCH_ORGAN
-			case 21:
-				return .REED_ORGAN
-			case 22:
-				return .ACCORDION_FRENCH
-			case 23:
-				return .HARMONICA
-			case 24:
-				return .TANGO_ACCORDION_BAND_NEON
-			case 25:
-				return .ACOUSTIC_GUITAR_NYLON
-			case 26:
-				return .ACOUSTIC_GUITAR_STEEL
-			case 27:
-				return .ELECTRIC_GUITAR_JAZZ
-			case 28:
-				return .ELECTRIC_GUITAR_CLEAN
-			case 29:
-				return .ELECTRIC_GUITAR_MUTED
-			case 30:
-				return .OVERDRIVEN_GUITAR
-			case 31:
-				return .DISTORTION_GUITAR
-			case 32:
-				return .GUITAR_HARMONICS
-			case 33:
-				return .ACOUSTIC_BASS
-			case 34:
-				return .ELECTRIC_BASS_FINGERED
-			case 35:
-				return .ELECTRIC_BASS_PICKED
-			case 36:
-				return .FRETLESS_BASS
-			case 37:
-				return .SLAP_BASS_1
-			case 38:
-				return .SLAP_BASS_2
-			case 39:
-				return .SYNTH_BASS_1
-			case 40:
-				return .SYNTH_BASS_2
-			case 41:
-				return .VIOLIN
-			case 42:
-				return .VIOLA
-			case 43:
-				return .CELLO
-			case 44:
-				return .CONTRABASS
-			case 45:
-				return .TREMOLO_STRINGS
-			case 46:
-				return .PIZZICATO_STRINGS
-			case 47:
-				return .ORCHESTRAL_HARP
-			case 48:
-				return .TIMPANI
-			case 49:
-				return .STRING_ENSEMBLE_1_STRINGS
-			case 50:
-				return .STRING_ENSEMBLE_2_SLOW_STRINGS
-			case 51:
-				return .SYNTHSTRINGS_1
-			case 52:
-				return .SYNTHSTRINGS_2
-			case 53:
-				return .CHOIR_AAHS
-			case 54:
-				return .VOICE_OOHS
-			case 55:
-				return .SYNTH_VOICE
-			case 56:
-				return .ORCHESTRA_HIT
-			case 57:
-				return .TRUMPET
-			case 58:
-				return .TROMBONE
-			case 59:
-				return .TUBA
-			case 60:
-				return .MUTED_TRUMPET
-			case 61:
-				return .FRENCH_HORN
-			case 62:
-				return .BRASS_SECTION
-			case 63:
-				return .SYNTHBRASS_1
-			case 64:
-				return .SYNTHBRASS_2
-			case 65:
-				return .SOPRANO_SAX
-			case 66:
-				return .ALTO_SAX
-			case 67:
-				return .TENOR_SAX
-			case 68:
-				return .BARITONE_SAX
-			case 69:
-				return .OBOE
-			case 70:
-				return .ENGLISH_HORN
-			case 71:
-				return .BASSOON
-			case 72:
-				return .CLARINET
-			case 73:
-				return .PICCOLO
-			case 74:
-				return .FLUTE
-			case 75:
-				return .RECORDER
-			case 76:
-				return .PAN_FLUTE
-			case 77:
-				return .BLOWN_BOTTLE
-			case 78:
-				return .SHAKUHACHI
-			case 79:
-				return .WHISTLE
-			case 80:
-				return .OCARINA
-			case 81:
-				return .LEAD_1_SQUARE_WAVE
-			case 82:
-				return .LEAD_2_SAWTOOTH_WAVE
-			case 83:
-				return .LEAD_3_CALLIOPE
-			case 84:
-				return .LEAD_4_CHIFFER
-			case 85:
-				return .LEAD_5_CHARANG
-			case 86:
-				return .LEAD_6_VOICE_SOLO
-			case 87:
-				return .LEAD_7_FIFTHS
-			case 88:
-				return .LEAD_8_BASS_LEAD
-			case 89:
-				return .PAD_1_NEW_AGE_FANTASIA
-			case 90:
-				return .PAD_2_WARM
-			case 91:
-				return .PAD_3_POLYSYNTH
-			case 92:
-				return .PAD_4_CHOIR_SPACE_VOICE
-			case 93:
-				return .PAD_5_BOWED_GLASS
-			case 94:
-				return .PAD_6_METALLIC_PRO
-			case 95:
-				return .PAD_7_HALO
-			case 96:
-				return .PAD_8_SWEEP
-			case 97:
-				return .FX_1_RAIN
-			case 98:
-				return .FX_2_SOUNDTRACK
-			case 99:
-				return .FX_3_CRYSTAL
-			case 100:
-				return .FX_4_ATMOSPHERE
-			case 101:
-				return .FX_5_BRIGHTNESS
-			case 102:
-				return .FX_6_GOBLINS
-			case 103:
-				return .FX_7_ECHOES_DROPS
-			case 104:
-				return .FX_8_SCI_FI_STAR_THEME
-			case 105:
-				return .SITAR
-			case 106:
-				return .BANJO
-			case 107:
-				return .SHAMISEN
-			case 108:
-				return .KOTO
-			case 109:
-				return .KALIMBA
-			case 110:
-				return .BAG_PIPE
-			case 111:
-				return .FIDDLE
-			case 112:
-				return .SHANAI
-			case 113:
-				return .TINKLE_BELL
-			case 114:
-				return .AGOGO
-			case 115:
-				return .STEEL_DRUMS
-			case 116:
-				return .WOODBLOCK
-			case 117:
-				return .TAIKO_DRUM
-			case 118:
-				return .MELODIC_TOM
-			case 119:
-				return .SYNTH_DRUM
-			case 120:
-				return .REVERSE_CYMBAL
-			case 121:
-				return .GUITAR_FRET_NOISE
-			case 122:
-				return .BREATH_NOISE
-			case 123:
-				return .SEASHORE
-			case 124:
-				return .BIRD_TWEET
-			case 125:
-				return .TELEPHONE_RING
-			case 126:
-				return .HELICOPTER
-			case 127:
-				return .APPLAUSE
-			case 128:
-				return .GUNSHOT
-			default:
-				return .ACOUSTIC_GRAND_PIANO
-		}//End switch
-	}
+}
+
+func valueToInstrumentPatch(patchValue:UInt16) -> MidiInstrumentPatch
+{
+	switch(patchValue) {
+		case 1:
+			return .ACOUSTIC_GRAND_PIANO
+		case 2:
+			return .BRIGHT_ACOUSTIC_PIANO
+		case 3:
+			return .ELECTRIC_GRAND_PIANO
+		case 4:
+			return .HONKY_TONK_PIANO
+		case 5:
+			return .ELECTRIC_PIANO_1_RHODES_PIANO
+		case 6:
+			return .ELECTRIC_PIANO_2_CHORUSED_PIANO
+		case 7:
+			return .HARPSICHORD
+		case 8:
+			return .CLAVINET
+		case 9:
+			return .CELESTA
+		case 10:
+			return .GLOCKENSPIEL
+		case 11:
+			return .MUSIC_BOX
+		case 12:
+			return .VIBRAPHONE
+		case 13:
+			return .MARIMBA
+		case 14:
+			return .XYLOPHONE
+		case 15:
+			return .TUBULAR_BELLS
+		case 16:
+			return .DULCIMER_SANTUR
+		case 17:
+			return .DRAWBAR_ORGAN_HAMMOND
+		case 18:
+			return .PERCUSSIVE_ORGAN
+		case 19:
+			return .ROCK_ORGAN
+		case 20:
+			return .CHURCH_ORGAN
+		case 21:
+			return .REED_ORGAN
+		case 22:
+			return .ACCORDION_FRENCH
+		case 23:
+			return .HARMONICA
+		case 24:
+			return .TANGO_ACCORDION_BAND_NEON
+		case 25:
+			return .ACOUSTIC_GUITAR_NYLON
+		case 26:
+			return .ACOUSTIC_GUITAR_STEEL
+		case 27:
+			return .ELECTRIC_GUITAR_JAZZ
+		case 28:
+			return .ELECTRIC_GUITAR_CLEAN
+		case 29:
+			return .ELECTRIC_GUITAR_MUTED
+		case 30:
+			return .OVERDRIVEN_GUITAR
+		case 31:
+			return .DISTORTION_GUITAR
+		case 32:
+			return .GUITAR_HARMONICS
+		case 33:
+			return .ACOUSTIC_BASS
+		case 34:
+			return .ELECTRIC_BASS_FINGERED
+		case 35:
+			return .ELECTRIC_BASS_PICKED
+		case 36:
+			return .FRETLESS_BASS
+		case 37:
+			return .SLAP_BASS_1
+		case 38:
+			return .SLAP_BASS_2
+		case 39:
+			return .SYNTH_BASS_1
+		case 40:
+			return .SYNTH_BASS_2
+		case 41:
+			return .VIOLIN
+		case 42:
+			return .VIOLA
+		case 43:
+			return .CELLO
+		case 44:
+			return .CONTRABASS
+		case 45:
+			return .TREMOLO_STRINGS
+		case 46:
+			return .PIZZICATO_STRINGS
+		case 47:
+			return .ORCHESTRAL_HARP
+		case 48:
+			return .TIMPANI
+		case 49:
+			return .STRING_ENSEMBLE_1_STRINGS
+		case 50:
+			return .STRING_ENSEMBLE_2_SLOW_STRINGS
+		case 51:
+			return .SYNTHSTRINGS_1
+		case 52:
+			return .SYNTHSTRINGS_2
+		case 53:
+			return .CHOIR_AAHS
+		case 54:
+			return .VOICE_OOHS
+		case 55:
+			return .SYNTH_VOICE
+		case 56:
+			return .ORCHESTRA_HIT
+		case 57:
+			return .TRUMPET
+		case 58:
+			return .TROMBONE
+		case 59:
+			return .TUBA
+		case 60:
+			return .MUTED_TRUMPET
+		case 61:
+			return .FRENCH_HORN
+		case 62:
+			return .BRASS_SECTION
+		case 63:
+			return .SYNTHBRASS_1
+		case 64:
+			return .SYNTHBRASS_2
+		case 65:
+			return .SOPRANO_SAX
+		case 66:
+			return .ALTO_SAX
+		case 67:
+			return .TENOR_SAX
+		case 68:
+			return .BARITONE_SAX
+		case 69:
+			return .OBOE
+		case 70:
+			return .ENGLISH_HORN
+		case 71:
+			return .BASSOON
+		case 72:
+			return .CLARINET
+		case 73:
+			return .PICCOLO
+		case 74:
+			return .FLUTE
+		case 75:
+			return .RECORDER
+		case 76:
+			return .PAN_FLUTE
+		case 77:
+			return .BLOWN_BOTTLE
+		case 78:
+			return .SHAKUHACHI
+		case 79:
+			return .WHISTLE
+		case 80:
+			return .OCARINA
+		case 81:
+			return .LEAD_1_SQUARE_WAVE
+		case 82:
+			return .LEAD_2_SAWTOOTH_WAVE
+		case 83:
+			return .LEAD_3_CALLIOPE
+		case 84:
+			return .LEAD_4_CHIFFER
+		case 85:
+			return .LEAD_5_CHARANG
+		case 86:
+			return .LEAD_6_VOICE_SOLO
+		case 87:
+			return .LEAD_7_FIFTHS
+		case 88:
+			return .LEAD_8_BASS_LEAD
+		case 89:
+			return .PAD_1_NEW_AGE_FANTASIA
+		case 90:
+			return .PAD_2_WARM
+		case 91:
+			return .PAD_3_POLYSYNTH
+		case 92:
+			return .PAD_4_CHOIR_SPACE_VOICE
+		case 93:
+			return .PAD_5_BOWED_GLASS
+		case 94:
+			return .PAD_6_METALLIC_PRO
+		case 95:
+			return .PAD_7_HALO
+		case 96:
+			return .PAD_8_SWEEP
+		case 97:
+			return .FX_1_RAIN
+		case 98:
+			return .FX_2_SOUNDTRACK
+		case 99:
+			return .FX_3_CRYSTAL
+		case 100:
+			return .FX_4_ATMOSPHERE
+		case 101:
+			return .FX_5_BRIGHTNESS
+		case 102:
+			return .FX_6_GOBLINS
+		case 103:
+			return .FX_7_ECHOES_DROPS
+		case 104:
+			return .FX_8_SCI_FI_STAR_THEME
+		case 105:
+			return .SITAR
+		case 106:
+			return .BANJO
+		case 107:
+			return .SHAMISEN
+		case 108:
+			return .KOTO
+		case 109:
+			return .KALIMBA
+		case 110:
+			return .BAG_PIPE
+		case 111:
+			return .FIDDLE
+		case 112:
+			return .SHANAI
+		case 113:
+			return .TINKLE_BELL
+		case 114:
+			return .AGOGO
+		case 115:
+			return .STEEL_DRUMS
+		case 116:
+			return .WOODBLOCK
+		case 117:
+			return .TAIKO_DRUM
+		case 118:
+			return .MELODIC_TOM
+		case 119:
+			return .SYNTH_DRUM
+		case 120:
+			return .REVERSE_CYMBAL
+		case 121:
+			return .GUITAR_FRET_NOISE
+		case 122:
+			return .BREATH_NOISE
+		case 123:
+			return .SEASHORE
+		case 124:
+			return .BIRD_TWEET
+		case 125:
+			return .TELEPHONE_RING
+		case 126:
+			return .HELICOPTER
+		case 127:
+			return .APPLAUSE
+		case 128:
+			return .GUNSHOT
+		default:
+			return .ACOUSTIC_GRAND_PIANO
+	}//End switch
 }
 
 enum MidiPrecussionMap {
@@ -957,5 +957,156 @@ func valueToPrecussionPatch(precussionValue:UInt8) -> PrecussionKeyMap
 		default:
 			return (35, .OCTAVE_ONE_B, .ACOUSTIC_BASS_DRUM)
 	}//End Switch
-
 }
+
+enum MusicalKey
+{
+	//Circle of 5ths. Major and relative minor keys.
+	case C_MAJ,
+	A_MIN,
+	G_MAJ,
+	E_MIN,
+	D_MAJ,
+	B_MIN,
+	A_MAJ,
+	FSHRP_MIN,
+	E_MAJ,
+	CSHRP_MIN,
+	B_MAJ,
+	GSHRP_MIN,
+	FSHRP_MAJ,
+	DSHRP_MIN,
+	CSHRP_MAJ,
+	ASHRP_MIN,
+
+	//Circle of 4ths. Major and relative minor keys
+	F_MAJ,
+	D_MIN,
+	BFLAT_MAJ,
+	G_MIN,
+	EFLAT_MAJ,
+	C_MIN,
+	AFLAT_MAJ,
+	F_MIN,
+	DFLAT_MAJ,
+	BFLAT_MIN,
+	GFLAT_MAJ,
+	EFLAT_MIN,
+	CFLAT_MAJ,
+	AFLAT_MIN
+	
+	static func musicalKeyToString(p:MusicalKey?) -> String
+	{
+		guard let k = p else {return ""}
+		
+		var s:String = ""
+
+		switch(k) {
+			case MusicalKey.C_MAJ:
+				s = "C-Maj"
+			case MusicalKey.A_MIN:
+				s = "A-min"
+			case MusicalKey.G_MAJ:
+				s = "G-Maj"
+			case MusicalKey.E_MIN:
+				s = "E-min"
+			case MusicalKey.D_MAJ:
+				s = "D-Maj"
+			case MusicalKey.B_MIN:
+				s = "B-min"
+			case MusicalKey.A_MAJ:
+				s = "A-Maj"
+			case MusicalKey.FSHRP_MIN:
+				s = "F#-min"
+			case MusicalKey.E_MAJ:
+				s = "E-Maj"
+			case MusicalKey.CSHRP_MIN:
+				s = "C#-min"
+			case MusicalKey.B_MAJ:
+				s = "B-Maj"
+			case MusicalKey.GSHRP_MIN:
+				s = "G#-min"
+			case MusicalKey.FSHRP_MAJ:
+				s = "F#-Maj"
+			case MusicalKey.DSHRP_MIN:
+				s = "D#-min"
+			case MusicalKey.CSHRP_MAJ:
+				s = "C#-Maj"
+			case MusicalKey.ASHRP_MIN:
+				s = "A#-min"
+
+			/////////////////
+			case MusicalKey.F_MAJ:
+				s = "F-Maj"
+			case MusicalKey.D_MIN:
+				s = "D-min"
+			case MusicalKey.BFLAT_MAJ:
+				s = "Bb-Maj"
+			case MusicalKey.G_MIN:
+				s = "G-min"
+			case MusicalKey.EFLAT_MAJ:
+				s = "Eb-Maj"
+			case MusicalKey.C_MIN:
+				s = "C-min"
+			case MusicalKey.AFLAT_MAJ:
+				s = "Ab-Maj"
+			case MusicalKey.F_MIN:
+				s = "F-min"
+			case MusicalKey.DFLAT_MAJ:
+				s = "Db-Maj"
+			case MusicalKey.BFLAT_MIN:
+				s = "Bb-min"
+			case MusicalKey.GFLAT_MAJ:
+				s = "Gb-Maj"
+			case MusicalKey.EFLAT_MIN:
+				s = "Eb-min"
+			case MusicalKey.CFLAT_MAJ:
+				s = "Cb-Maj"
+			case MusicalKey.AFLAT_MIN:
+				s = "Ab-min"
+		}
+
+		return s
+	}
+}
+
+func valuesToMusicalKey(numShrpFlats:Int8, MajMin:UInt8) -> MusicalKey
+{
+	var musicalKey:MusicalKey = .C_MAJ
+	
+	if(numShrpFlats == 0) {return (MajMin == 0) ? .C_MAJ : .A_MIN}
+	
+	//Is 4th since the circle of 5ths counter-clockwise is the circle of
+	//4ths and these are the keys which contain flats instead of sharps.
+	let is4th:Bool = (numShrpFlats < 0)
+	
+	switch(abs(numShrpFlats)) {
+		case 1:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .G_MAJ : .E_MIN}
+			else {musicalKey = (MajMin == 0) ? .F_MAJ : .D_MIN}
+		case 2:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .D_MAJ : .B_MIN}
+			else {musicalKey = (MajMin == 0) ? .BFLAT_MAJ : .G_MIN}
+		case 3:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .A_MAJ : .FSHRP_MIN}
+			else {musicalKey = (MajMin == 0) ? .EFLAT_MAJ : .C_MIN}
+		case 4:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .E_MAJ : .CSHRP_MIN}
+			else {musicalKey = (MajMin == 0) ? .AFLAT_MAJ : .F_MIN}
+		case 5:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .B_MAJ : .GSHRP_MIN}
+			else {musicalKey = (MajMin == 0) ? .DFLAT_MAJ : .BFLAT_MIN}
+		case 6:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .FSHRP_MAJ : .DSHRP_MIN}
+			else {musicalKey = (MajMin == 0) ? .GFLAT_MAJ : .EFLAT_MIN}
+		case 7:
+			if(is4th == false) {musicalKey = (MajMin == 0) ? .CSHRP_MAJ : .ASHRP_MIN}
+			else {musicalKey = (MajMin == 0) ? .CFLAT_MAJ : .AFLAT_MIN}
+		default:
+			()
+	}
+	
+	return musicalKey
+}
+
+

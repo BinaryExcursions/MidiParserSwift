@@ -20,6 +20,16 @@ class Printer
 		print(msg)
 	}
 	
+	class func printUInt8AsHex(X:UInt8, activePrintOverride:Bool = false)
+	{
+		if(printIsActive == false) {
+			if(activePrintOverride == false) {return}
+		}
+		
+		let s:String = String(format: "%02X", X)
+		print("The UInt8 \(X) is: 0x\(s)\n**********************\n")
+	}
+	
 	class func printUInt32AsHex(X:UInt32, activePrintOverride:Bool = false)
 	{
 		if(printIsActive == false) {

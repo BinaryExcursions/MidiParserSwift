@@ -64,4 +64,32 @@ class Utils
 
 		return X
 	}
+	
+	//We're just going be here.  I think this really should be a UInt32 - MAX!
+	class func readVariableLengthValue(startIdx:inout Int, data:Data) -> UInt32
+	{
+		guard (startIdx > 0) && (startIdx < data.count)  else {return 0}
+		
+		var numberOfBytesRead:Int = 0 //We know we're going to read at least one byte
+
+		var totalValue:UInt32 = 0
+		var valueAtByteValue:UInt8 = 0
+		
+		repeat {
+			valueAtByteValue = data[startIdx]
+			
+			//You MUST clear out the leading bit before adding it to our deltatime value! Just simply
+			//ALWAYS doing it since it does no harm regardless if the leading bit is 0 or 1
+			//but keeps the logic and readablity clean
+			let deltaTimeValueToAdd = valueAtByteValue & MSB_REST_VALUE //Need to use a tmp variable so the loop predicate still works correctly
+
+			totalValue <<= (numberOfBytesRead * 8)//First shift our stored value. 8 because it is the size of a byte
+			totalValue += UInt32(deltaTimeValueToAdd)
+			
+			startIdx += 1
+			numberOfBytesRead += 1
+		}while ((valueAtByteValue & MSB_TEST_VALUE) == MSB_TEST_VALUE)
+		
+		return totalValue//(delta:UInt32(deltaTime), numBytesRead:numberOfBytesRead)
+	}
 }
