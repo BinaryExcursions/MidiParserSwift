@@ -1,0 +1,313 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 55;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C857BBC82818A76A00E66AFA /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = C857BBC72818A76A00E66AFA /* main.swift */; };
+		C8B39AA32818AACA003DE187 /* midiReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AA22818AACA003DE187 /* midiReader.swift */; };
+		C8B39AA52818C55C003DE187 /* Printer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AA42818C55C003DE187 /* Printer.swift */; };
+		C8B39AA72818C69B003DE187 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AA62818C69B003DE187 /* Utils.swift */; };
+		C8B39AA9281983C1003DE187 /* midiHeaderComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AA8281983C1003DE187 /* midiHeaderComponent.swift */; };
+		C8B39AAD28198B2D003DE187 /* midiTrackComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AAC28198B2D003DE187 /* midiTrackComponent.swift */; };
+		C8B39AAF28199D8A003DE187 /* defs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AAE28199D8A003DE187 /* defs.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		C857BBC22818A76A00E66AFA /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		C857BBC42818A76A00E66AFA /* MidiReader */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = MidiReader; sourceTree = BUILT_PRODUCTS_DIR; };
+		C857BBC72818A76A00E66AFA /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		C8B39AA22818AACA003DE187 /* midiReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiReader.swift; sourceTree = "<group>"; };
+		C8B39AA42818C55C003DE187 /* Printer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Printer.swift; sourceTree = "<group>"; };
+		C8B39AA62818C69B003DE187 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		C8B39AA8281983C1003DE187 /* midiHeaderComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiHeaderComponent.swift; sourceTree = "<group>"; };
+		C8B39AAC28198B2D003DE187 /* midiTrackComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiTrackComponent.swift; sourceTree = "<group>"; };
+		C8B39AAE28199D8A003DE187 /* defs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = defs.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C857BBC12818A76A00E66AFA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C857BBBB2818A76A00E66AFA = {
+			isa = PBXGroup;
+			children = (
+				C857BBC62818A76A00E66AFA /* MidiReader */,
+				C857BBC52818A76A00E66AFA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		C857BBC52818A76A00E66AFA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C857BBC42818A76A00E66AFA /* MidiReader */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		C857BBC62818A76A00E66AFA /* MidiReader */ = {
+			isa = PBXGroup;
+			children = (
+				C8B39AAE28199D8A003DE187 /* defs.swift */,
+				C857BBC72818A76A00E66AFA /* main.swift */,
+				C8B39AA8281983C1003DE187 /* midiHeaderComponent.swift */,
+				C8B39AAC28198B2D003DE187 /* midiTrackComponent.swift */,
+				C8B39AA22818AACA003DE187 /* midiReader.swift */,
+				C8B39AA42818C55C003DE187 /* Printer.swift */,
+				C8B39AA62818C69B003DE187 /* Utils.swift */,
+			);
+			path = MidiReader;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C857BBC32818A76A00E66AFA /* MidiReader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C857BBCB2818A76A00E66AFA /* Build configuration list for PBXNativeTarget "MidiReader" */;
+			buildPhases = (
+				C857BBC02818A76A00E66AFA /* Sources */,
+				C857BBC12818A76A00E66AFA /* Frameworks */,
+				C857BBC22818A76A00E66AFA /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MidiReader;
+			productName = MidiReader;
+			productReference = C857BBC42818A76A00E66AFA /* MidiReader */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C857BBBC2818A76A00E66AFA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1330;
+				LastUpgradeCheck = 1330;
+				TargetAttributes = {
+					C857BBC32818A76A00E66AFA = {
+						CreatedOnToolsVersion = 13.3.1;
+					};
+				};
+			};
+			buildConfigurationList = C857BBBF2818A76A00E66AFA /* Build configuration list for PBXProject "MidiReader" */;
+			compatibilityVersion = "Xcode 13.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C857BBBB2818A76A00E66AFA;
+			productRefGroup = C857BBC52818A76A00E66AFA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C857BBC32818A76A00E66AFA /* MidiReader */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C857BBC02818A76A00E66AFA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8B39AA9281983C1003DE187 /* midiHeaderComponent.swift in Sources */,
+				C8B39AA52818C55C003DE187 /* Printer.swift in Sources */,
+				C857BBC82818A76A00E66AFA /* main.swift in Sources */,
+				C8B39AA32818AACA003DE187 /* midiReader.swift in Sources */,
+				C8B39AAF28199D8A003DE187 /* defs.swift in Sources */,
+				C8B39AAD28198B2D003DE187 /* midiTrackComponent.swift in Sources */,
+				C8B39AA72818C69B003DE187 /* Utils.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C857BBC92818A76A00E66AFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		C857BBCA2818A76A00E66AFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++17";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+			};
+			name = Release;
+		};
+		C857BBCC2818A76A00E66AFA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = V2LPST59AH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		C857BBCD2818A76A00E66AFA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = V2LPST59AH;
+				ENABLE_HARDENED_RUNTIME = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C857BBBF2818A76A00E66AFA /* Build configuration list for PBXProject "MidiReader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C857BBC92818A76A00E66AFA /* Debug */,
+				C857BBCA2818A76A00E66AFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C857BBCB2818A76A00E66AFA /* Build configuration list for PBXNativeTarget "MidiReader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C857BBCC2818A76A00E66AFA /* Debug */,
+				C857BBCD2818A76A00E66AFA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C857BBBC2818A76A00E66AFA /* Project object */;
+}
