@@ -15,6 +15,9 @@ let MSB_REST_VALUE:UInt8 = 0x7F //We & with this value to clear the leading bit 
 class MidiReader
 {
 	private var m_FileData:Data?
+	//The event parsers
+	private lazy var m_MetaParser:MetaEventParser = MetaEventParser()
+	private lazy var m_MidiParser:MidiCommonEventParser = MidiCommonEventParser()
 
 	func openMidiFile(fileName:String) -> Bool
 	{
@@ -176,7 +179,7 @@ class MidiReader
 	}
 	
 	private func determineEventToParse(startIdx:inout Int, event:MidiEvent)
-	{
+	{		
 		guard let fileData = m_FileData else {return}
 		guard (startIdx > 0) && (startIdx < fileData.count) else {return}
 		
@@ -184,8 +187,11 @@ class MidiReader
 
 		if(eventByte1 == META_EVENT_IDENFIFIER) {
 			event.EventType = .META_EVENT
-			let metaParser:MetaEventParser = MetaEventParser()
-			metaParser.parseMetaEvent(startIdx: &startIdx, data: fileData) //You'll re-read the first byte of the meta record
+			m_MetaParser.parseMetaEvent(startIdx: &startIdx, data: fileData) //You'll re-read the first byte of the meta record
+		}
+		else {
+			event.EventType = .MIDI_EVENT
+			m_MidiParser.parseMidiEvent(startIdx:&startIdx, data:fileData)
 		}
 	}
 }

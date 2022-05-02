@@ -14,6 +14,7 @@
 		C8B39AA9281983C1003DE187 /* midiHeaderComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AA8281983C1003DE187 /* midiHeaderComponent.swift */; };
 		C8B39AAD28198B2D003DE187 /* midiTrackComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AAC28198B2D003DE187 /* midiTrackComponent.swift */; };
 		C8B39AAF28199D8A003DE187 /* defs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8B39AAE28199D8A003DE187 /* defs.swift */; };
+		C8F5FEBE281DF39500B85328 /* midiCommonEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F5FEBD281DF39500B85328 /* midiCommonEventParser.swift */; };
 		C8F86362281C495A00A00F72 /* midiRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F86361281C495A00A00F72 /* midiRecord.swift */; };
 		C8F86364281C51A300A00F72 /* metaEventParser.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8F86363281C51A300A00F72 /* metaEventParser.swift */; };
 /* End PBXBuildFile section */
@@ -39,6 +40,7 @@
 		C8B39AA8281983C1003DE187 /* midiHeaderComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiHeaderComponent.swift; sourceTree = "<group>"; };
 		C8B39AAC28198B2D003DE187 /* midiTrackComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiTrackComponent.swift; sourceTree = "<group>"; };
 		C8B39AAE28199D8A003DE187 /* defs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = defs.swift; sourceTree = "<group>"; };
+		C8F5FEBD281DF39500B85328 /* midiCommonEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiCommonEventParser.swift; sourceTree = "<group>"; };
 		C8F86361281C495A00A00F72 /* midiRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = midiRecord.swift; sourceTree = "<group>"; };
 		C8F86363281C51A300A00F72 /* metaEventParser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = metaEventParser.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -82,6 +84,7 @@
 				C8B39AA42818C55C003DE187 /* Printer.swift */,
 				C8B39AA62818C69B003DE187 /* Utils.swift */,
 				C8F86363281C51A300A00F72 /* metaEventParser.swift */,
+				C8F5FEBD281DF39500B85328 /* midiCommonEventParser.swift */,
 			);
 			path = MidiReader;
 			sourceTree = "<group>";
@@ -144,6 +147,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C8F5FEBE281DF39500B85328 /* midiCommonEventParser.swift in Sources */,
 				C8B39AA9281983C1003DE187 /* midiHeaderComponent.swift in Sources */,
 				C8B39AA52818C55C003DE187 /* Printer.swift in Sources */,
 				C857BBC82818A76A00E66AFA /* main.swift in Sources */,

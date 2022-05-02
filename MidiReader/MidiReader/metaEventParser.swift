@@ -87,7 +87,18 @@ class MetaEventParser
 	//0xFF20 -
 	private func parseMidiChannel(startIdx:inout Int)
 	{
+		let constByte:UInt8 = m_Data[startIdx]
+		startIdx += 1
+
+		//Via the spec - the full definition of the Channel Prefix metaevent is 0xFF2001
+		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
+		//to perform an extra validation here.
+		guard(constByte == 0x01) else {return}
 		
+		let midiChannel:UInt8 = m_Data[startIdx]
+		startIdx += 1
+		
+		Printer.printUInt8AsHex(X: midiChannel)
 	}
 	
 	//0xFF21 - //Also has a 01 after the 21, and then a byte (0 - 127) Identifing the port number.
@@ -96,7 +107,7 @@ class MetaEventParser
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
 
-		//Via the spec - the full definition of the time signature metaevent is 0xFF2101
+		//Via the spec - the full definition of the port selection metaevent is 0xFF2101
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
 		guard(constByte == 0x01) else {return}
@@ -114,7 +125,7 @@ class MetaEventParser
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
 
-		//Via the spec - the full definition of the time signature metaevent is 0xFF5103
+		//Via the spec - the full definition of the tempo metaevent is 0xFF5103
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
 		guard(constByte == 0x03) else {return}
@@ -139,7 +150,36 @@ class MetaEventParser
 	//0xFF54 -
 	private func parseSmpte(startIdx:inout Int)
 	{
+		let constByte:UInt8 = m_Data[startIdx]
+		startIdx += 1
+
+		//Via the spec - the full definition of the SMPTE metaevent is 0xFF5405
+		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
+		//to perform an extra validation here.
+		guard(constByte == 0x05) else {return}
 		
+		//hr
+		let hours:UInt8 = m_Data[startIdx]
+		startIdx += 1
+		
+		//mn
+		let minutes:UInt8 = m_Data[startIdx]
+		startIdx += 1
+		
+		//se
+		let seconds:UInt8 = m_Data[startIdx]
+		startIdx += 1
+		
+		//fr
+		let milliseconds:UInt8 = m_Data[startIdx]
+		startIdx += 1
+		
+		//ff
+		let fractionalFrames:UInt8 = m_Data[startIdx]
+		startIdx += 1
+
+		Printer.printByteValuesAsHex(byte1: hours, byte2: minutes, byte3: seconds, byte4: milliseconds)
+		Printer.printByteValuesAsHex(byte1: fractionalFrames)
 	}
 	
 	//0xFF58 -
@@ -178,7 +218,7 @@ class MetaEventParser
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
 
-		//Via the spec - the full definition of the time signature metaevent is 0xFF5902
+		//Via the spec - the full definition of the mini-time signature metaevent is 0xFF5902
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
 		guard(constByte == 0x02) else {return}
@@ -195,7 +235,7 @@ class MetaEventParser
 		let MajorMinorKey:UInt8 = m_Data[startIdx]
 		startIdx += 1
 
-		let trackKey:MusicalKey = valuesToMusicalKey(numShrpFlats:numberSharpsFlats, MajMin:MajorMinorKey)
+		let trackKey:MusicalKey = Utils.valuesToMusicalKey(numShrpFlats:numberSharpsFlats, MajMin:MajorMinorKey)
 		Printer.printMessage(msg: MusicalKey.musicalKeyToString(p: trackKey))
 	}
 	
@@ -267,27 +307,3 @@ class MetaEventParser
 		
 	}
 }
-
-
-//	case UNKNOWN = 0x0000,
-//	SEQUENCE_NUMBER = 0xFF00, //Will be followed by 02 then the sequence number
-
-//	TEXT_INFO = 0xFF01, //Followed by LEN, TEXT. NOTE: The 0xFF01 - 0xFF0F are all reserved for text messages.
-//	COPYRIGHT = 0xFF02,
-//	TEXT_SEQUENCE = 0xFF03,
-//	TEXT_INSTRUMENT = 0xFF04,
-//	TEXT_LYRIC = 0xFF05,
-//	TEXT_MARKER = 0xFF06,
-//	TEXT_CUE_POINT = 0xFF07,
-
-
-//	MIDI_CHANNEL = 0xFF20,
-//	PORT_SELECTION = 0xFF21, //Also has a 01 after the 21, and then a byte (0 - 127) Identifing the port number.
-//	END_OF_TRACK = 0xFF2F,
-
-
-//	TEMPO = 0xFF51,
-//	SMPTE = 0xFF54,
-//	TIME_SIGNATURE = 0xFF58,
-//	MINI_TIME_SIGNATURE = 0xFF59,
-//	SPECIAL_SEQUENCE = 0xFF7F
