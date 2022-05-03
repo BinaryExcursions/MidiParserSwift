@@ -7,36 +7,38 @@
 
 import Foundation
 
-class MidiCommonEventParser
+class MidiEventParser
 {
 	private var m_Data:Data!
+	private var m_TimeDelta:UInt32 = 0
 	
-	func parseMidiEvent(startIdx:inout Int, data:Data) -> protoEvent?
+	func parseMidiEvent(startIdx:inout Int, timeDelta:UInt32, data:Data) -> Event?
 	{
 		m_Data = data
+		m_TimeDelta = timeDelta //Just don't want to pass this around to every method
 		
 		guard (startIdx > 0) && (startIdx < m_Data.count) else {return nil}
 		
 		let midiStatusByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
 		
-		let midiEvent:protoEvent? = parseByteToMajorMidiMessage(messageValue: midiStatusByte, idx: &startIdx)
+		let midiEvent:Event? = parseByteToMajorMidiMessage(messageValue: midiStatusByte, idx: &startIdx)
 		
 		return midiEvent
 	}
 
-	func parseByteToMajorMidiMessage(messageValue:UInt8, idx:inout Int) -> protoEvent?
+	func parseByteToMajorMidiMessage(messageValue:UInt8, idx:inout Int) -> Event?
 	{
 		let SYS_COMMON_MSG_CTRl:UInt8 = 0xF0
 		let SYS_DATA_TYPE_CTRL:UInt8 = 0x08
 
-		var evt:protoEvent?
-
-		var messageInfo:(msg:MidiMajorMessage, channel:UInt8?) = (.UNDEFINED, 0)
-
+		var evt:Event?
+		
 		if( (messageValue & SYS_COMMON_MSG_CTRl) == SYS_COMMON_MSG_CTRl) { //Looking at the high 4 bits of the byte
-			let dataInfoVal:UInt8 = messageValue & SYS_DATA_TYPE_CTRL //Looking at the lower 4 bits of the byte
-			messageInfo = (dataInfoVal == SYS_DATA_TYPE_CTRL) ? parseSystemRealTimeMessage(messageValue:messageValue) : parseSystemCommonMessage(messageValue: messageValue)
+			//Looking at the lower 4 bits of the byte but more specifically the first bit - if set = Sys Realtime if not sys common.
+			//ie: If the last 4 bits are > 8 (ie: 0xF8 - 0xFD) its a sys realtime, but if less than 8 (ie: 0xF0 - 0xF7) It's a sys common message
+			let dataInfoVal:UInt8 = messageValue & SYS_DATA_TYPE_CTRL
+			evt = (dataInfoVal == SYS_DATA_TYPE_CTRL) ? parseSystemRealTimeMessage(messageValue:messageValue, idx:&idx) : parseSystemExclusiveCommonMessage(messageValue: messageValue, idx:&idx)
 		}
 		else {
 			evt = parseChannelMessageType(messageValue: messageValue, idx: &idx)
@@ -61,7 +63,7 @@ class MidiCommonEventParser
 			byteRead = m_Data[idx] //Reading the Velocity
 			idx += 1
 			
-			return MidiChannelEvent(channel:chnl, noteVelocity:byteRead, musicalNote:musicalNote, eventType:.NOTE_OFF)
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, noteVelocity:byteRead, musicalNote:musicalNote, eventType:.NOTE_OFF)
 		}
 		else if( (messageValue & MidiMajorMessage.NOTE_ON.rawValue) == messageValue) {
 			byteRead = m_Data[idx] //Reading the key note
@@ -72,7 +74,7 @@ class MidiCommonEventParser
 			byteRead = m_Data[idx] //Reading the Velocity
 			idx += 1
 			
-			return MidiChannelEvent(channel:chnl, noteVelocity:byteRead, musicalNote:musicalNote, eventType:.NOTE_ON)
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, noteVelocity:byteRead, musicalNote:musicalNote, eventType:.NOTE_ON)
 		}
 		else if( (messageValue & MidiMajorMessage.KEY_PRESSURE_AFTER_TOUCH.rawValue) == messageValue) {
 			byteRead = m_Data[idx] //Reading the key note
@@ -83,7 +85,7 @@ class MidiCommonEventParser
 			byteRead = m_Data[idx] //Reading the Pressure
 			idx += 1
 			
-			return MidiChannelEvent(channel:chnl, pressure:byteRead, musicalNote:musicalNote, eventType:.KEY_PRESSURE_AFTER_TOUCH)
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, pressure:byteRead, musicalNote:musicalNote, eventType:.KEY_PRESSURE_AFTER_TOUCH)
 		}
 		else if( (messageValue & MidiMajorMessage.CONTROL_CHANGE.rawValue) == messageValue) {
 			let byte1 = m_Data[idx] //Reading the controller number
@@ -91,20 +93,20 @@ class MidiCommonEventParser
 
 			byteRead = m_Data[idx] //Reading the new control value
 			idx += 1
-			
-			return MidiChannelEvent(channel:chnl, controllerNumber:byte1, controllerChangeValue:byteRead, eventType:.CONTROL_CHANGE)
+
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, controllerNumber:byte1, controllerChangeValue:byteRead, eventType:.CONTROL_CHANGE)
 		}
 		else if( (messageValue & MidiMajorMessage.PROGRAM_CHANGE.rawValue) == messageValue) {
 			byteRead = m_Data[idx] //Reading the new program number
 			idx += 1
 			
-			return MidiChannelEvent(channel:chnl, programNumber:byteRead, eventType:.PROGRAM_CHANGE)
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, programNumber:byteRead, eventType:.PROGRAM_CHANGE)
 		}
 		else if( (messageValue & MidiMajorMessage.CHANNEL_PRESSURE_AFTER_TOUCH.rawValue) == messageValue) {
 			byteRead = m_Data[idx] //Reading the pressure value
 			idx += 1
 			
-			return MidiChannelEvent(channel:chnl, pressure:byteRead, eventType:.CHANNEL_PRESSURE_AFTER_TOUCH)
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, pressure:byteRead, eventType:.CHANNEL_PRESSURE_AFTER_TOUCH)
 		}
 		else if( (messageValue & MidiMajorMessage.PITCH_WHEEL_CHANGE.rawValue) == messageValue) {
 			var pitch:UInt16 = 0
@@ -122,38 +124,50 @@ class MidiCommonEventParser
 			pitch <<= 8
 			pitch += UInt16(lsb)
 
-			return MidiChannelEvent(channel:chnl, pitchWheelChange:pitch, eventType:.PITCH_WHEEL_CHANGE)
+			return MidiChannelEvent(eventTimeDelta:m_TimeDelta, channel:chnl, pitchWheelChange:pitch, eventType:.PITCH_WHEEL_CHANGE)
 		}
 
 		return nil
 	}
 
-	private func parseSystemCommonMessage(messageValue:UInt8) -> (msg:MidiMajorMessage, channel:UInt8?)
+	private func parseSystemExclusiveCommonMessage(messageValue:UInt8, idx:inout Int) -> Event?
 	{
 		let SYS_MSG_IDENTIFIER_CTRL:UInt8 = 0x0F//So we can evaluate the lower 4 bits to identify the specific message
-		var messageInfo:(msg:MidiMajorMessage, channel:UInt8?) = (.UNDEFINED, nil)
 		
-		switch(messageValue & SYS_MSG_IDENTIFIER_CTRL) {
-		case 0:
-			messageInfo.msg = .SYS_EXCLUSIVE
-		case 2:
-			messageInfo.msg = .SONG_POSITION_POINTER
-		case 3:
-			messageInfo.msg = .SONG_SELECT
-		case 6:
-			messageInfo.msg = .TUNE_REQUEST
-		case 7:
-			messageInfo.msg = .END_OF_EXCLUSIVE
-		case 1, 4, 5:
-			messageInfo.msg = .UNDEFINED //As per the spec - these values are undefined System Common message tyeps
-		default:
-			messageInfo.msg = .UNDEFINED
-		}
-
-		return messageInfo
+		var bytes:Array<UInt8>?
+		var processMore:Bool = true
+		
+		var msgIdToProcess:UInt8 = messageValue
+		
+		repeat {
+			//There's a high probable that you don't want to add the start and stop bytes to your byte array, but you may.  If you do
+			//then you'll want to update the 0th and 7th case.
+			switch(msgIdToProcess & SYS_MSG_IDENTIFIER_CTRL) {
+				case 0://.SYS_EXCLUSIVE - Start
+					bytes = Array<UInt8>() //Only once we know for certain we have the "start" of the exclusive message to we allocate our byte array
+				
+				//--NOTE: To the end user, you may want to do more with the system exclusive message so I left in the commented out cases
+				//so you can see where you may want to provide more implementation specific to a particular manufacture's MIDI implementation
+//				case 2://.SONG_POSITION_POINTER
+//				case 3://.SONG_SELECT
+//				case 6://.TUNE_REQUEST
+				case 7://.END_OF_EXCLUSIVE --End message
+					processMore = false
+					idx -= 1 //We read the end of message - if we don't reset the counter here, the increment after the switch will get us our of sync
+				case 1, 4, 5://.UNDEFINED
+					()  //As per the spec - these values are undefined System Common message tyeps
+				default:
+					if(bytes != nil){bytes!.append(msgIdToProcess)}
+			}
+			
+			idx += 1
+			msgIdToProcess = m_Data[idx]
+		} while(processMore == true)
+		
+		return SysExclusionEvent(eventTimeDelta: m_TimeDelta, exclusiveInfo: bytes ?? [])
 	}
 	
-	private func parseSystemRealTimeMessage(messageValue:UInt8) -> (msg:MidiMajorMessage, channel:UInt8?)
+	private func parseSystemRealTimeMessage(messageValue:UInt8, idx:inout Int) -> Event?
 	{
 		let SYS_MSG_IDENTIFIER_CTRL:UInt8 = 0x07//So we can evaluate the lower 3 bits to identify the specific message
 		var messageInfo:(msg:MidiMajorMessage, channel:UInt8?) = (.UNDEFINED, nil)
@@ -176,7 +190,11 @@ class MidiCommonEventParser
 		default:
 			messageInfo.msg = .UNDEFINED
 		}
-
-		return messageInfo
+		
+		if(messageInfo.msg == .UNDEFINED) {
+			Printer.printMessage(msg: "The System Real-time event was read as undefined.")
+		}
+		
+		return SysRealtimeEvent(eventTimeDelta: m_TimeDelta)
 	}
 }

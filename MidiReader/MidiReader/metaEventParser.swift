@@ -10,10 +10,12 @@ import Foundation
 class MetaEventParser
 {
 	private var m_Data:Data!
+	private var m_TimeDelta:UInt32 = 0
 
-	func parseMetaEvent(startIdx:inout Int, data:Data)
+	func parseMetaEvent(startIdx:inout Int, timeDelta:UInt32, data:Data) -> Event?
 	{
 		m_Data = data
+		m_TimeDelta = timeDelta
 		
 		let metaSimpleID:UInt16 = Utils.into16Bit(byte1: m_Data[startIdx], byte2: m_Data[startIdx + 1])
 		startIdx += 2
@@ -28,64 +30,70 @@ class MetaEventParser
 		
 		guard(metaEventType != .UNKNOWN) else {
 			m_Data = nil //Just for cleanliness. It's reset each time the function is called, but still good practice.
-			return
+			return nil
 		}
 		
-		parseAppropriateMetaEvent(startIdx:&startIdx, eventType:metaEventType)
+		let event:Event? = parseAppropriateMetaEvent(startIdx:&startIdx, eventType:metaEventType)
 
 		m_Data = nil
+		
+		return event
 	}
 	
-	private func parseAppropriateMetaEvent(startIdx:inout Int, eventType:MetaEventDefinitions)
+	private func parseAppropriateMetaEvent(startIdx:inout Int, eventType:MetaEventDefinitions) -> Event?
 	{
+		var event:Event?
+		
 		switch(eventType) {
 			case .SEQUENCE_NUMBER:
-				parseSeqNumber(startIdx:&startIdx)
+				event = parseSeqNumber(startIdx:&startIdx)
 			case .TEXT_INFO:
-				parseTextEvent(startIdx:&startIdx)
+				event = parseTextEvent(startIdx:&startIdx)
 			case .COPYRIGHT:
-				parseCopyright(startIdx:&startIdx)
+				event = parseCopyright(startIdx:&startIdx)
 			case .TEXT_SEQUENCE:
-				parseTextSequence(startIdx:&startIdx)
+				event = parseTextSequence(startIdx:&startIdx)
 			case .TEXT_INSTRUMENT:
-				parseTextInstrument(startIdx:&startIdx)
+				event = parseTextInstrument(startIdx:&startIdx)
 			case .TEXT_LYRIC:
-				parseTextLyric(startIdx:&startIdx)
+				event = parseTextLyric(startIdx:&startIdx)
 			case .TEXT_MARKER:
-				parseTextMarker(startIdx:&startIdx)
+				event = parseTextMarker(startIdx:&startIdx)
 			case .TEXT_CUE_POINT:
-				parseTextCuePoint(startIdx:&startIdx)
+				event = parseTextCuePoint(startIdx:&startIdx)
 			case .MIDI_CHANNEL:
-				parseMidiChannel(startIdx:&startIdx)
+				event = parseMidiChannel(startIdx:&startIdx)
 			case .PORT_SELECTION:
-				parsePortSelection(startIdx:&startIdx)
+				event = parsePortSelection(startIdx:&startIdx)
 			case .TEMPO:
-				parseTempo(startIdx:&startIdx)
+				event = parseTempo(startIdx:&startIdx)
 			case .SMPTE:
-				parseSmpte(startIdx:&startIdx)
+				event = parseSmpte(startIdx:&startIdx)
 			case .TIME_SIGNATURE:
-				parseTimeSignature(startIdx:&startIdx)
+				event = parseTimeSignature(startIdx:&startIdx)
 			case .MINI_TIME_SIGNATURE:
-				parseMiniTimeSignature(startIdx:&startIdx)
+				event = parseMiniTimeSignature(startIdx:&startIdx)
 			case .SPECIAL_SEQUENCE:
-				parseSpecialSequence(startIdx:&startIdx)
+				event = parseSpecialSequence(startIdx:&startIdx)
 			case .END_OF_TRACK://0xFF2F
 				() //Already handled
 			default:
 				()
 		}
+		
+		return event
 	}
 	
 	//0xFF00 - Will be followed by 02 then the sequence number
-	private func parseSeqNumber(startIdx:inout Int)
+	private func parseSeqNumber(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//All 0xFF2[0 - F]
 	
 	//0xFF20 -
-	private func parseMidiChannel(startIdx:inout Int)
+	private func parseMidiChannel(startIdx:inout Int) -> Event?
 	{
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -93,16 +101,18 @@ class MetaEventParser
 		//Via the spec - the full definition of the Channel Prefix metaevent is 0xFF2001
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
-		guard(constByte == 0x01) else {return}
+		guard(constByte == 0x01) else {return nil}
 		
 		let midiChannel:UInt8 = m_Data[startIdx]
 		startIdx += 1
 		
 		Printer.printUInt8AsHex(X: midiChannel)
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF21 - //Also has a 01 after the 21, and then a byte (0 - 127) Identifing the port number.
-	private func parsePortSelection(startIdx:inout Int)
+	private func parsePortSelection(startIdx:inout Int) -> Event?
 	{
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -110,17 +120,19 @@ class MetaEventParser
 		//Via the spec - the full definition of the port selection metaevent is 0xFF2101
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
-		guard(constByte == 0x01) else {return}
+		guard(constByte == 0x01) else {return nil}
 		
 		let portNumber:UInt8 = m_Data[startIdx]
 		startIdx += 1
 		
 		Printer.printUInt8AsHex(X: portNumber)
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 
 	//All 0xFF5[0 - F]
 	//0xFF51 -
-	private func parseTempo(startIdx:inout Int)
+	private func parseTempo(startIdx:inout Int) -> Event?
 	{
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -128,7 +140,7 @@ class MetaEventParser
 		//Via the spec - the full definition of the tempo metaevent is 0xFF5103
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
-		guard(constByte == 0x03) else {return}
+		guard(constByte == 0x03) else {return nil}
 		
 		//This will ultimately be used to store the 24 bit tempo
 		var tempoValue:UInt32 = 0x00000000
@@ -145,10 +157,12 @@ class MetaEventParser
 		startIdx += 1
 
 		Printer.printUInt32AsHex(X: tempoValue)
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF54 -
-	private func parseSmpte(startIdx:inout Int)
+	private func parseSmpte(startIdx:inout Int) -> Event?
 	{
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -156,7 +170,7 @@ class MetaEventParser
 		//Via the spec - the full definition of the SMPTE metaevent is 0xFF5405
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
-		guard(constByte == 0x05) else {return}
+		guard(constByte == 0x05) else {return nil}
 		
 		//hr
 		let hours:UInt8 = m_Data[startIdx]
@@ -180,10 +194,12 @@ class MetaEventParser
 
 		Printer.printByteValuesAsHex(byte1: hours, byte2: minutes, byte3: seconds, byte4: milliseconds)
 		Printer.printByteValuesAsHex(byte1: fractionalFrames)
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF58 -
-	private func parseTimeSignature(startIdx:inout Int)
+	private func parseTimeSignature(startIdx:inout Int) -> Event?
 	{
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -191,7 +207,7 @@ class MetaEventParser
 		//Via the spec - the full definition of the time signature metaevent is 0xFF5804
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
-		guard(constByte == 0x04) else {return}
+		guard(constByte == 0x04) else {return nil}
 
 		let numerator:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -210,10 +226,12 @@ class MetaEventParser
 		Printer.printByteValuesAsHex(byte1: denominator)
 		Printer.printByteValuesAsHex(byte1: midiClocksInMetronomeClick)
 		Printer.printByteValuesAsHex(byte1: numberNotated32ndNotes)
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF59 -
-	private func parseMiniTimeSignature(startIdx:inout Int)
+	private func parseMiniTimeSignature(startIdx:inout Int) -> Event?
 	{
 		let constByte:UInt8 = m_Data[startIdx]
 		startIdx += 1
@@ -221,7 +239,7 @@ class MetaEventParser
 		//Via the spec - the full definition of the mini-time signature metaevent is 0xFF5902
 		//Our enum is only UInt16 since not all meta-events use 3 bytes, therefore, we need
 		//to perform an extra validation here.
-		guard(constByte == 0x02) else {return}
+		guard(constByte == 0x02) else {return nil}
 		
 		//We need this to be signed!
 		//Negative represents the number of flats [-1 through -7]
@@ -237,34 +255,35 @@ class MetaEventParser
 
 		let trackKey:MusicalKey = Utils.valuesToMusicalKey(numShrpFlats:numberSharpsFlats, MajMin:MajorMinorKey)
 		Printer.printMessage(msg: MusicalKey.musicalKeyToString(p: trackKey))
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//Events with 0xFF7[0 - F]
 	
 	//0xFF7F -
-	private func parseSpecialSequence(startIdx:inout Int)
+	private func parseSpecialSequence(startIdx:inout Int) -> Event?
 	{
-		
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//All meta-text events are 0xFF0[1 - F]
 	//NOTE: In the text events, there is a size of the text + 1. It seems this is
 	//a value of 0x00 for the string's null terminator. ie: '\0'
 	//0xFF01, //Followed by LEN, TEXT. NOTE: The 0xFF01 - 0xFF0F are all reserved for text messages.
-	private func parseTextEvent(startIdx:inout Int)
+	private func parseTextEvent(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF02 -
-	private func parseCopyright(startIdx:inout Int)
+	private func parseCopyright(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF03 -
-	private func parseTextSequence(startIdx:inout Int)
+	private func parseTextSequence(startIdx:inout Int) -> Event?
 	{
 		let textLen:UInt32 = Utils.readVariableLengthValue(startIdx:&startIdx, data:m_Data)
 		
@@ -281,29 +300,31 @@ class MetaEventParser
 		
 		startIdx += Int(textLen)
 		Printer.printMessage(msg: textInfo)
+		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF04 -
-	private func parseTextInstrument(startIdx:inout Int)
+	private func parseTextInstrument(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF05 -
-	private func parseTextLyric(startIdx:inout Int)
+	private func parseTextLyric(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF06 -
-	private func parseTextMarker(startIdx:inout Int)
+	private func parseTextMarker(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 	
 	//0xFF07 -
-	private func parseTextCuePoint(startIdx:inout Int)
+	private func parseTextCuePoint(startIdx:inout Int) -> Event?
 	{
-		
+		return MetaEvent(eventTimeDelta: m_TimeDelta)
 	}
 }

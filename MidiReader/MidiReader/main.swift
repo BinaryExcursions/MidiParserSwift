@@ -5,6 +5,9 @@
 //  Created by Jeff Behrbaum on 4/26/22.
 //
 
+//File info from:
+//https://midimusic.github.io/tech/midispec.html
+
 import Foundation
 
 Printer.printIsActive = false
@@ -23,13 +26,12 @@ var midiHeader:MidiHeader = MidiHeader()
 var lastIdxRead = midiReader.readHeader(hdr: midiHeader) + 1
 
 midiRecord.Header = midiHeader
+let trackInfo:MidiTrack? = nil
 
-while(lastIdxRead > 0) {
-	let trackInfo:(offsetIdx:Int, track:MidiTrack?) = midiReader.readTrack(startIndex:lastIdxRead)
+ repeat {
+	let trackInfo:MidiTrack? = midiReader.readTrack(startIndex:&lastIdxRead)
 
-	if let track = trackInfo.track {
+	if let track = trackInfo {
 		midiRecord.appendTrack(track: track)
 	}
-	
-	lastIdxRead = trackInfo.offsetIdx
-}
+}while(trackInfo != nil)

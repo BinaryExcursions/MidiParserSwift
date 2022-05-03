@@ -26,6 +26,7 @@ enum TimeingInfo {
 enum TrackEventType {
 	case MIDI_EVENT,
 	SYSEX_EVENT,
+	SYSREALTIME_EVENT,
 	META_EVENT
 }
 
@@ -76,6 +77,20 @@ enum MidiMajorMessage:UInt8 {
 	STOP_SEQUENCE = 0xFC,
 	ACTIVE_SENSING = 0xFE,
 	RESET = 0xFF
+}
+
+//IF - your mode control message implements mode control - which is identified if the first of the two
+//bytes following the status message has a value of 122, 123, 124, 125, 126, or 127 then you'll use both
+//the control number in combination with the new value to be in one of the following control modes
+enum MidiEventModeControlStates:UInt8 {
+	case UNDEFINED,
+	LOCAL_CONTROL_ON,
+	LOCAL_CONTROL_OFF,
+	ALL_NOTES_OFF,
+	OMNI_MODE_OFF,
+	OMNI_MODE_ON,
+	MONO_MODE_ON,
+	MONO_MODE_OFF
 }
 
 //From Table 1.2
@@ -628,14 +643,17 @@ enum MusicalKey {
 	}
 }
 
-protocol protoEvent {
+protocol Event {
 	var eMidiType:TrackEventType{get}
+	var timeDelta:UInt32{get}
 }
 
-struct MidiChannelEvent: protoEvent
+struct MidiChannelEvent: Event
 {
 	var eMidiType: TrackEventType {return .MIDI_EVENT}
+	var timeDelta: UInt32 {return eventTimeDelta}
 
+	var eventTimeDelta:UInt32
 	var channel:UInt8?
 	var pressure:UInt8?
 	var noteVelocity:UInt8?
@@ -650,14 +668,29 @@ struct MidiChannelEvent: protoEvent
 	var eventType:MidiMajorMessage
 }
 
-struct MetaEvent: protoEvent
+struct MetaEvent: Event
 {
+	var timeDelta: UInt32 {return eventTimeDelta}
 	var eMidiType: TrackEventType {return .META_EVENT}
+	
+	var eventTimeDelta:UInt32
 }
 
-struct SysExclusionEvent: protoEvent
+struct SysExclusionEvent: Event
 {
+	var timeDelta: UInt32 {return eventTimeDelta}
 	var eMidiType: TrackEventType {return .SYSEX_EVENT}
+	
+	var eventTimeDelta:UInt32
+	
+	var exclusiveInfo:Array<UInt8>
+
 }
 
+struct SysRealtimeEvent: Event {
+	var timeDelta: UInt32 {return eventTimeDelta}
+	var eMidiType: TrackEventType {return .SYSREALTIME_EVENT}
+	
+	var eventTimeDelta:UInt32
+}
 

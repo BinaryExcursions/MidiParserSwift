@@ -17,7 +17,7 @@ class MidiReader
 	private var m_FileData:Data?
 	//The event parsers
 	private lazy var m_MetaParser:MetaEventParser = MetaEventParser()
-	private lazy var m_MidiParser:MidiCommonEventParser = MidiCommonEventParser()
+	private lazy var m_MidiParser:MidiEventParser = MidiEventParser()
 
 	func openMidiFile(fileName:String) -> Bool
 	{
@@ -79,16 +79,17 @@ class MidiReader
 		return 13
  	}
 	
-	func readTrack(startIndex:Int) -> (offsetIdx:Int, track:MidiTrack?)
+	func readTrack(startIndex:inout Int) -> MidiTrack?
 	{
-		let HDR_SIZE:Int = 4  //4 bytes
+		//The below constants are number of byte values
+		let HDR_SIZE:Int = 4
 		let EOT_SIZE:Int = 3 //3 bytes are used for the end of track marker
-		let NUM_BYTES_TRACK_SIZE = 4 //4 bytes
+		let NUM_BYTES_TRACK_SIZE = 4
 
 		var idx:Int = startIndex
 
 		guard let fileData = m_FileData else {
-			return (-1, nil)
+			return nil
 		}
 
 		//Read track header
@@ -96,30 +97,30 @@ class MidiReader
 		idx += HDR_SIZE
 		Printer.printUInt32AsHex(X: hdr)
 
-		guard hdr == MIDI_TRK_VALUE else {return (idx, nil)}
+		guard hdr == MIDI_TRK_VALUE else {return nil}
 		
 		let trkChunkSize:UInt32 = Utils.into32Bit(byte1: fileData[idx], byte2: fileData[idx + 1], byte3: fileData[idx + 2], byte4: fileData[idx + 3])
 		idx += NUM_BYTES_TRACK_SIZE
 		Printer.printUInt32AsHex(X: trkChunkSize)
 
 		let endIdx1:Int = startIndex + HDR_SIZE + NUM_BYTES_TRACK_SIZE + Int(trkChunkSize)  - EOT_SIZE
-		guard (endIdx1 + 2) < fileData.count else {return (idx, nil)}
+		guard (endIdx1 + 2) < fileData.count else {return nil}
 		
 		//Remember, we have NOT moved the read pointer, we did an index calculation.
 		/***Therefore, you must remember to increment the reader by EOT_SIZE before returning.**/ //Not certain this comment is needed
 		//We're doing this EOT check here to make certain we have a valid record before reading and parsing the whole thing only to find out later it may be bad.
 		let eot:UInt32 = Utils.into32Bit(byte1: 0x00, byte2: fileData[endIdx1], byte3: fileData[endIdx1 + 1], byte4: fileData[endIdx1 + 2])
-		guard eot == END_OF_TRACK else {return (idx, nil)}
+		guard eot == END_OF_TRACK else {return nil}
 		Printer.printUInt32AsHex(X: eot)
 		
 		let track:MidiTrack = MidiTrack()
 		track.TrackBlockTitle = hdr
 
 		//Putting the current read-offset here just so our loop is cleaner and we can just start off using this tuple from the very start.
-		var eventInfo:(byteOffset:Int, event:MidiEvent?) = (idx, nil)
+		var eventInfo:(byteOffset:Int, event:Event?) = (idx, nil)
 
 		repeat {
-			eventInfo = readTrackEvent(startIdx:eventInfo.byteOffset)
+			eventInfo = readTrackEvents(startIdx:eventInfo.byteOffset)
 
 			if let event = eventInfo.event {
 				track.appendEvent(event: event)
@@ -127,11 +128,11 @@ class MidiReader
 		}while(eventInfo.event != nil)
 
 		Printer.printMessage(msg:"Track Read")
-		return (-1, track)
+		return track
 	}
 
 	//Remember, the first thing we should be reading per-event is the delta time then that's followed by the event
-	private func readTrackEvent(startIdx:Int) -> (byteOffset:Int, event:MidiEvent?)
+	private func readTrackEvents(startIdx:Int) -> (byteOffset:Int, event:Event?)
 	{
 		var idx:Int = startIdx
 
@@ -140,12 +141,11 @@ class MidiReader
 		let trackDeltaTimeOffset:(delta:UInt32, numBytesRead:Int) = readDeltaOffsetTime(startIdx:idx)
 		guard trackDeltaTimeOffset.numBytesRead > 0 else {return (idx, nil)} //Random value for now - just a place holder
 
-		let event:MidiEvent = MidiEvent()
-		
 		idx += trackDeltaTimeOffset.numBytesRead
 		
-		determineEventToParse(startIdx:&idx, event:event)
-		
+		let event = parseEventData(startIdx:&idx,
+											timeDelta:trackDeltaTimeOffset.delta)
+
 		return (idx, event)
 	}
 	
@@ -178,20 +178,20 @@ class MidiReader
 		return (delta:UInt32(deltaTime), numBytesRead:numberOfBytesRead)
 	}
 	
-	private func determineEventToParse(startIdx:inout Int, event:MidiEvent)
+	private func parseEventData(startIdx:inout Int, timeDelta:UInt32) -> Event?
 	{		
-		guard let fileData = m_FileData else {return}
-		guard (startIdx > 0) && (startIdx < fileData.count) else {return}
+		guard let fileData = m_FileData else {return nil}
+		guard (startIdx > 0) && (startIdx < fileData.count) else {return nil}
 		
 		let eventByte1:UInt8 = fileData[startIdx]
 
-		if(eventByte1 == META_EVENT_IDENFIFIER) {
-			event.EventType = .META_EVENT
-			m_MetaParser.parseMetaEvent(startIdx: &startIdx, data: fileData) //You'll re-read the first byte of the meta record
+		if(eventByte1 == META_EVENT_IDENFIFIER) { //Is it a .META_EVENT
+			return m_MetaParser.parseMetaEvent(startIdx: &startIdx, timeDelta: timeDelta, data: fileData) //You'll re-read the first byte of the meta record
 		}
-		else {
-			event.EventType = .MIDI_EVENT
-			m_MidiParser.parseMidiEvent(startIdx:&startIdx, data:fileData)
+		//NOTE - This will include the system exclusive message as trying to process all the specific manufactures isn't realistic for a general MIDI parser.
+		// users of this source will need to specifically develop the parsing and event structs specific to a MIDI device they want to handle the sysex event.
+		else { //Is it a .MIDI_EVENT
+			return m_MidiParser.parseMidiEvent(startIdx:&startIdx, timeDelta:timeDelta, data:fileData)
 		}
 	}
 }
