@@ -687,7 +687,8 @@ struct SysExclusionEvent: Event
 
 }
 
-struct SysRealtimeEvent: Event {
+struct SysRealtimeEvent: Event
+{
 	var timeDelta: UInt32 {return eventTimeDelta}
 	var eMidiType: TrackEventType {return .SYSREALTIME_EVENT}
 	

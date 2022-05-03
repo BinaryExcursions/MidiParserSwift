@@ -15,6 +15,7 @@ let MSB_REST_VALUE:UInt8 = 0x7F //We & with this value to clear the leading bit 
 class MidiReader
 {
 	private var m_FileData:Data?
+	
 	//The event parsers
 	private lazy var m_MetaParser:MetaEventParser = MetaEventParser()
 	private lazy var m_MidiParser:MidiEventParser = MidiEventParser()
