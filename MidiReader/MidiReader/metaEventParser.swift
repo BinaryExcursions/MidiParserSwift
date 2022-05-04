@@ -87,7 +87,7 @@ class MetaEventParser
 	//0xFF00 - Will be followed by 02 then the sequence number
 	private func parseSeqNumber(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.SEQUENCE_NUMBER)
 	}
 	
 	//All 0xFF2[0 - F]
@@ -108,7 +108,7 @@ class MetaEventParser
 		
 		Printer.printUInt8AsHex(X: midiChannel)
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.MIDI_CHANNEL)
 	}
 	
 	//0xFF21 - //Also has a 01 after the 21, and then a byte (0 - 127) Identifing the port number.
@@ -127,7 +127,7 @@ class MetaEventParser
 		
 		Printer.printUInt8AsHex(X: portNumber)
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.PORT_SELECTION)
 	}
 
 	//All 0xFF5[0 - F]
@@ -158,7 +158,7 @@ class MetaEventParser
 
 		Printer.printUInt32AsHex(X: tempoValue)
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEMPO)
 	}
 	
 	//0xFF54 -
@@ -195,7 +195,7 @@ class MetaEventParser
 		Printer.printByteValuesAsHex(byte1: hours, byte2: minutes, byte3: seconds, byte4: milliseconds)
 		Printer.printByteValuesAsHex(byte1: fractionalFrames)
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.SMPTE)
 	}
 	
 	//0xFF58 -
@@ -215,7 +215,9 @@ class MetaEventParser
 		//The denominator is a negative power of two. ie: 1^(-3) is really 1/3
 		let denominator:UInt8 = m_Data[startIdx]
 		startIdx += 1
-		
+
+		let timing:TimingInfo = Utils.timeSignatureFromNumeratorDenominator(numerator:numerator, denominator:denominator)
+
 		let midiClocksInMetronomeClick:UInt8 = m_Data[startIdx]
 		startIdx += 1
 		
@@ -227,7 +229,11 @@ class MetaEventParser
 		Printer.printByteValuesAsHex(byte1: midiClocksInMetronomeClick)
 		Printer.printByteValuesAsHex(byte1: numberNotated32ndNotes)
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta,
+							  trackTiming: timing,
+							  numberNotated32ndNotes: numberNotated32ndNotes,
+							  midiClocksInMetronomeClick: midiClocksInMetronomeClick,
+							  metaeventType:.TIME_SIGNATURE)
 	}
 	
 	//0xFF59 -
@@ -256,7 +262,7 @@ class MetaEventParser
 		let trackKey:MusicalKey = Utils.valuesToMusicalKey(numShrpFlats:numberSharpsFlats, MajMin:MajorMinorKey)
 		Printer.printMessage(msg: MusicalKey.musicalKeyToString(p: trackKey))
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, trackKey:trackKey, metaeventType:.MINI_TIME_SIGNATURE)
 	}
 	
 	//Events with 0xFF7[0 - F]
@@ -264,7 +270,7 @@ class MetaEventParser
 	//0xFF7F -
 	private func parseSpecialSequence(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.SPECIAL_SEQUENCE)
 	}
 	
 	//All meta-text events are 0xFF0[1 - F]
@@ -273,13 +279,13 @@ class MetaEventParser
 	//0xFF01, //Followed by LEN, TEXT. NOTE: The 0xFF01 - 0xFF0F are all reserved for text messages.
 	private func parseTextEvent(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEXT_INFO)
 	}
 	
 	//0xFF02 -
 	private func parseCopyright(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.COPYRIGHT)
 	}
 	
 	//0xFF03 -
@@ -301,30 +307,30 @@ class MetaEventParser
 		startIdx += Int(textLen)
 		Printer.printMessage(msg: textInfo)
 		
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEXT_SEQUENCE)
 	}
 	
 	//0xFF04 -
 	private func parseTextInstrument(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEXT_INSTRUMENT)
 	}
 	
 	//0xFF05 -
 	private func parseTextLyric(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEXT_LYRIC)
 	}
 	
 	//0xFF06 -
 	private func parseTextMarker(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEXT_MARKER)
 	}
 	
 	//0xFF07 -
 	private func parseTextCuePoint(startIdx:inout Int) -> Event?
 	{
-		return MetaEvent(eventTimeDelta: m_TimeDelta)
+		return MetaEvent(eventTimeDelta: m_TimeDelta, metaeventType:.TEXT_CUE_POINT)
 	}
 }

@@ -23,7 +23,7 @@ class MidiTrack
 	
 	//The first track of type 1 file will need to contain tempo information
 	//Remember, 4/4 at 120 bpm is always assumed if not present.
-	private var m_TempoMapInfo:(t:TimeingInfo, tempo:UInt8)?// = (.FOUR_FOUR, 120) //Here for defaults, but still ONLY in the first track unless it changes at some point
+	private var m_TempoMapInfo:(t:TimingInfo, tempo:UInt8)?// = (.FOUR_FOUR, 120) //Here for defaults, but still ONLY in the first track unless it changes at some point
 	
 	var TrackIndex:Int {
 		get{return m_TrackIndex}

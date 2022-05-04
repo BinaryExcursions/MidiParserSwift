@@ -49,7 +49,7 @@ class MidiReader
 	}
 
 	//The return is the last index read. -1 is error
-	func readHeader(hdr:MidiHeader) -> Int
+	func readMidiRecordHeader(hdr:inout MidiRecordHeader) -> Int
 	{
 		guard let fileData = m_FileData else {
 			return -1
@@ -96,7 +96,7 @@ class MidiReader
 		//Read track header
 		let hdr:UInt32 = Utils.into32Bit(byte1: fileData[idx], byte2: fileData[idx + 1], byte3: fileData[idx + 2], byte4: fileData[idx + 3])
 		idx += HDR_SIZE
-		Printer.printUInt32AsHex(X: hdr)
+		Printer.printUInt32AsHex(X: hdr, activePrintOverride: true)
 
 		guard hdr == MIDI_TRK_VALUE else {return nil}
 		

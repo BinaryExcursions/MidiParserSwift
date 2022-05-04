@@ -15,12 +15,39 @@ enum MidiType {
 	SEQUENTIAL
 }
 
-enum TimeingInfo {
+enum TimingInfo: CaseIterable {
 	case COMMON,
 	CUT,
-	FOUR_FOUR,
+	THREE_TWO,
+	FOUR_TWO,
+	FIVE_TWO,
+	SIX_TWO,
+	SEVEN_TWO,
+	EIGHT_TWO,
+	NINE_TWO,
 	TWO_FOUR,
-	THREE_FOUR
+	THREE_FOUR,
+	FIVE_FOUR,
+	SIX_FOUR,
+	SEVEN_FOUR,
+	EIGHT_FOUR,
+	NINE_FOUR,
+	TWO_EIGHT,
+	THREE_EIGHT,
+	FOUR_EIGHT,
+	FIVE_EIGHT,
+	SIX_EIGHT,
+	SEVEN_EIGHT,
+	EIGHT_EIGHT,
+	NINE_EIGHT,
+	TWO_SIXTEEN,
+	THREE_SIXTEEN,
+	FOUR_SIXTEEN,
+	FIVE_SIXTEEN,
+	SIX_SIXTEEN,
+	SEVEN_SIXTEEN,
+	EIGHT_SIXTEEN,
+	NINE_SIXTEEN
 }
 
 enum TrackEventType {
@@ -674,6 +701,13 @@ struct MetaEvent: Event
 	var eMidiType: TrackEventType {return .META_EVENT}
 	
 	var eventTimeDelta:UInt32
+
+	var trackKey:MusicalKey?
+	var trackTiming:TimingInfo?
+	var numberNotated32ndNotes:UInt8?
+	var midiClocksInMetronomeClick:UInt8?
+
+	var metaeventType:MetaEventDefinitions
 }
 
 struct SysExclusionEvent: Event

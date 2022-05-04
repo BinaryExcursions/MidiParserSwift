@@ -10,7 +10,7 @@ import Foundation
 let MIDI_HDR_VALUE:UInt32 = 0x4D546864 //This is MThd
 let MIDI_HDR_LEN_VALUE:UInt32 = 0x6 //This seems to be the standard number according to the specs
 
-class MidiHeader
+class MidiRecordHeader
 {
 	private var m_Title:UInt32 = 0
 	private var m_Length:UInt32 = 0

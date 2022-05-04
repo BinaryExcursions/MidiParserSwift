@@ -22,8 +22,8 @@ let midiReader:MidiReader = MidiReader()
 
 guard midiReader.openMidiFile(fileName:filePath) != false else {exit(0)}
 
-var midiHeader:MidiHeader = MidiHeader()
-var lastIdxRead = midiReader.readHeader(hdr: midiHeader) + 1
+var midiHeader:MidiRecordHeader = MidiRecordHeader()
+var lastIdxRead = midiReader.readMidiRecordHeader(hdr: &midiHeader) + 1
 
 midiRecord.Header = midiHeader
 let trackInfo:MidiTrack? = nil

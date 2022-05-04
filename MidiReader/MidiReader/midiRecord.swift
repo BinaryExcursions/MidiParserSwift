@@ -9,10 +9,10 @@ import Foundation
 
 class MidiRecord
 {
-	private var m_midiHeader:MidiHeader?
+	private var m_midiHeader:MidiRecordHeader?
 	private lazy var m_Tracks:Array<MidiTrack> = Array<MidiTrack>()
 	
-	var Header:MidiHeader? {
+	var Header:MidiRecordHeader? {
 		get{return m_midiHeader}
 		set{m_midiHeader = newValue}
 	}

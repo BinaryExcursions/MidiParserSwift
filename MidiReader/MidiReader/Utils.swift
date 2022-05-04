@@ -93,6 +93,135 @@ class Utils
 		return totalValue//(delta:UInt32(deltaTime), numBytesRead:numberOfBytesRead)
 	}
 	
+	class func timeSignatureFromNumeratorDenominator(numerator:UInt8, denominator:UInt8) -> TimingInfo
+	{
+		let timing:TimingInfo = .COMMON
+
+		//First get the denominator to a base 10 non-decimal value. if: Denominator may come is as 3
+		//Which means 2^-3 - this is because it's supposed to denote 2/8 for example
+		let D:UInt8 = 2^denominator
+		
+		guard(D>0 && ((D & (D-1)) == 0)) else {return .COMMON}
+
+		if(numerator == 2) && (D == 2) {
+			return .CUT
+		}
+		else if(numerator == 4) && (D == 4) {
+			return .COMMON
+		}
+		
+		if(numerator == 2){
+			switch(D) {
+				case 4:
+					return .TWO_FOUR
+				case 8:
+					return .TWO_EIGHT
+				case 16:
+					return .TWO_SIXTEEN
+				default:
+					return .CUT
+			}
+		}
+		else if(numerator == 3) {
+			switch(D) {
+				case 2:
+					return .THREE_TWO
+				case 4:
+					return .THREE_FOUR
+				case 8:
+					return .THREE_EIGHT
+				case 16:
+					return .THREE_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+		else if(numerator == 4) {
+			switch(D) {
+				case 2:
+					return .FOUR_TWO
+				case 8:
+					return .FOUR_EIGHT
+				case 16:
+					return .FOUR_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+		else if(numerator == 5) {
+			switch(D) {
+				case 2:
+					return .FIVE_TWO
+				case 4:
+					return .FIVE_FOUR
+				case 8:
+					return .FIVE_EIGHT
+				case 16:
+					return .FIVE_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+		else if(numerator == 6) {
+			switch(D) {
+				case 2:
+					return .SIX_TWO
+				case 4:
+					return .SIX_FOUR
+				case 8:
+					return .SIX_EIGHT
+				case 16:
+					return .SIX_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+		else if(numerator == 7) {
+			switch(D) {
+				case 2:
+					return .SEVEN_TWO
+				case 4:
+					return .SEVEN_FOUR
+				case 8:
+					return .SEVEN_EIGHT
+				case 16:
+					return .SEVEN_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+		else if(numerator == 8) {
+			switch(D) {
+				case 2:
+					return .EIGHT_TWO
+				case 4:
+					return .EIGHT_FOUR
+				case 8:
+					return .EIGHT_EIGHT
+				case 16:
+					return .EIGHT_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+		else if(numerator == 9) {
+			switch(D) {
+				case 2:
+					return .NINE_TWO
+				case 4:
+					return .NINE_FOUR
+				case 8:
+					return .NINE_EIGHT
+				case 16:
+					return .NINE_SIXTEEN
+				default:
+					return .COMMON
+			}
+		}
+
+		return timing
+	}
+	
 	//IMPORTANT!!!!! Channel value of 0 is refered to as channel 1. Ie: it's zero index based like an array [1, 2, 3, 4...]
 	//Channel value at index 0 is 1
 	class func valueToChannelVoiceMessage(messageValue:UInt8) -> (msg:MidiMajorMessage, channel:UInt8)
