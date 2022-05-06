@@ -90,20 +90,26 @@
 										<a href="https://github.com/binexc" target="_blank" class="author"><span class="name">Jeff Behrbaum</span><img src="images/Hal9000Small.png" alt="" /></a>
 									</div>
 								</header>
-								<p>This is the visual output so many of us are familiar with when we think of MIDI. This is a screen shot from Garadgeband on iPad, but the general UI is pretty common across various industry software applications. As you progress through the code base - reference back to this image as necessary. </p>
+								<p>Below is a visual example of what many of us think of when we discuss MIDI. This is a specific screenshot is from Garadgeband on iPad, but the general UI is pretty common across various industry software applications. 
+									As you read through this project's pages and the associated code base  - reference back to this image as necessary. It serves as a good referenence when learning to understand the nuances of the MIDI specs and some of
+									the reasons behind the code's logic and naming conventions. </p>
 								<p>Here, keep some things in mind as you begin your MIDI parsing journey:</p>
 								<ul>
 									<li>Each "row" represents a track</li>
 									<li>Each "dot/point" on the track represents an event.</li>
 									<li>Events start with time deltas. ie: Time delta since either the begning of the track or the previous event</li>
-									<li>Not all events represent music - there are essentially meta-events which aren't necessarily visible</li>
+									<li>Not all events represent music - there are essentially meta-events which aren't necessarily visible. ie: HW Device manufacture</li>
 									<li>Events should be processed as soon as the information is available to avoid audio lag</li>
 								</ul>
 									
 								<span class="image featured"><img src="images/tracks@2x.jpg" alt="game board" /></span>
-								<p> This project uses a command-line Swift application to exercise the code which parses a MIDI file. 
-									One consideration is that this code when "processing" an event logs and stores information - this is 
-									where you'll want to actaully process the event information.</p>
+								<p> 
+									This project reads MIDI data directly from a file. While many of you are also likely to read from an external source and bring 
+									in your MIDI via a stream, changing the file pointer to an inputsteam should be all you need to do to excercise your solution as
+									the MIDI rules remain the same. This project uses a command-line Swift application to exercise the code which parses a MIDI file. 
+									One consideration is that this code when "processing" an event logs and stores information - this is where you'll want to actaully 
+									process the event information.</p>
+
 								<p>The primary code to retreive all the information you'll need from  the parsed file in an object format is as follows:</p>
 
 								<div style="overflow: hidden;">
@@ -111,15 +117,15 @@
 										<code style="font-size: 0.9rem; font-weight: 550;">
 let midiRecord:MidiRecord = MidiRecord()
 let midiReader:MidiReader = MidiReader()
-											
+
 guard midiReader.openMidiFile(fileName:filePath) != false else {exit(0)}
-											
+	
 var midiHeader:MidiRecordHeader = MidiRecordHeader()
 var lastIdxRead = midiReader.readMidiRecordHeader(hdr: &midiHeader) + 1
-											
+	
 midiRecord.Header = midiHeader
 let trackInfo:MidiTrack? = nil
-											
+
 repeat {
 	let trackInfo:MidiTrack? = midiReader.readTrack(startIndex:&lastIdxRead)
 											
@@ -131,7 +137,7 @@ repeat {
 									</pre>
 								</div>
 
-								<p>Remember, this is straigh Swift - no additional iOS AV libraries or anything else. I developed it this way for two reasons:</p>
+								<p>Remember, this project uses on the Swift foundation - no additional iOS AV libraries or anything else. I developed it this way for two reasons:</p>
 								<ul>
 									<li>To provide the most straight forward learning process for developers without any magic 3rd party code</li>
 									<li>So that this code could just as easily be incorporated into your iOS, Mac or any other platform where you are using the Swift language.</li>
@@ -143,7 +149,7 @@ repeat {
 				<!-- Footer -->
 					<section id="footer">
 						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://twitter.com/binexcr" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
 							<li><a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
 							<li><a href="#" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
 							<li><a href="https://github.com/BinaryExcursions" target="_blank" class="icon brands fa-github"><span class="label">RSS</span></a></li>
@@ -151,7 +157,6 @@ repeat {
 						</ul>
 						<p class="copyright">&copy; All rights reserved, Binary Excursions LLC.</p>
 					</section>
-
 			</div>
 
 		<!-- Scripts -->

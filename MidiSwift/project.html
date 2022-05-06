@@ -90,15 +90,46 @@
 										<a href="https://github.com/binexc" target="_blank" class="author"><span class="name">Jeff Behrbaum</span><img src="images/Hal9000Small.png" alt="" /></a>
 									</div>
 								</header>
-								<p>A Swift open-source MIDI parser. Some useful links that helped me:</p>
+
+								<p>
+									The project itself was developed to help anyone interested in learning more about MIDI or wanting to integrate MIDI capablities into thier mobile application(s).
+									When I first started, I found a lot of official documenation but not a ton of examples which were easy to find, which is why I put this project together. My aim 
+									is to provide a straight forward code base which is easy to use, understand, and expand upon. I deliberately left out all 3rd party libraries and iOS/iPad specific
+									implementation to provide as broad a reference as possible. 
+								</p>
+
+								<p><u><i>Please note</i></u> - this is absolutely a Swift open-source MIDI parser. Feel free to use it within any of your hobby or commercial project. However, please 
+									provide appropriate recognition when doing so. There will hopefully be developers who contribute their talents and time to this project and it would be a tremendous 
+									disservice to them to not recognize their efforts. We'll all thank you in advance.
+								</p>
+
+								<p>As you look through this code base and documentation, if you'd like to see additional resources, below are some useful links which helped me:</p>
+
 								<ul>
-									<li><a href="https://youtu.be/040BKtnDdg0">youtube: Programming MIDI</a></li>
-									<li><a href="https://github.com/binexc/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_MIDI.cpp">C++ Example from above video</a></li>
-									<li><a href="https://midimusic.github.io/tech/midispec.html">Spec. w/Explanation</a></li>
-									<li><a href="https://midi.org/">Official MIDI Specs</a></li>
+									<li><a href="https://youtu.be/040BKtnDdg0" target="_blank">youtube: Programming MIDI</a></li>
+									<li><a href="https://github.com/binexc/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_MIDI.cpp" target="_blank">C++ Example from above video</a></li>
+									<li><a href="https://midimusic.github.io/tech/midispec.html" target="_blank">Spec. w/Explanation</a></li>
+									<li><a href="https://midi.org/" target="_blank">Official MIDI Specs</a></li>
 								</ul>
 									
 								<!-- <span class="image featured"><img src="images/tracks@2x.jpg" alt="game board" /></span> -->
+
+								<p> 
+									This project reads MIDI data directly from a file. While many of you are also likely to read from an external source and bring 
+									in your MIDI via a stream, changing the file pointer to an inputsteam should be all you need to do to excercise your solution. The
+									MIDI rules remain the same regardless. For simplicity, and to provide a straight forward code base, this project uses a command-line 
+									Swift application to exercise the code which parses a MIDI file. 
+								</p>
+
+								<p>
+									One consideration to keep in mind: when "processing" an event logs and stores information - this is where you'll want to actaully process the event information.
+								</p>
+								
+								<p>The primary code to retreive all the information you'll need from  the parsed file in an object format is as follows:</p>
+
+
+
+
 								<p> This project uses a command-line Swift application to exercise the code which parses a MIDI file. One consideration is that this code when "processing" an event logs and stores information - this is where you'll want to actaully process the event information.</p>
 								<p>The primary code to retreive all the information you'll need from  the parsed file in an object format is as follows:</p>
 
@@ -139,7 +170,7 @@ repeat {
 				<!-- Footer -->
 					<section id="footer">
 						<ul class="icons">
-							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="https://twitter.com/binexcr" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
 							<li><a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
 							<li><a href="#" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
 							<li><a href="https://github.com/BinaryExcursions" target="_blank" class="icon brands fa-github"><span class="label">RSS</span></a></li>
