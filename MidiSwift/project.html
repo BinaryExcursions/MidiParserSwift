@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<!--
+	Future Imperfect by Pixelarity
+	pixelarity.com | hello@pixelarity.com
+	License: pixelarity.com/license
+-->
+<html>
+	<head>
+		<title>MIDI Parser</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+
+	<body class="single is-preload">
+
+		<!-- Wrapper -->
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="https://binaryexcursions.github.io/">Github Pages</a></h1>
+						<nav class="links">
+							<ul>
+								<li><a href="index.html">Intro</a></li>
+								<li><a href="#">Project</a></li>
+								<li><a href="architecture.html">Architecture</a></li>
+								<!-- <li><a href="#">Tempus</a></li>
+								<li><a href="#">Adipiscing</a></li> -->
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<!-- <li class="search">
+									<a class="fa-search" href="#search">Search</a>
+									<form id="search" method="get" action="#">
+										<input type="text" name="query" placeholder="Search" />
+									</form>
+								</li> -->
+								<li class="menu">
+									<a class="fa-bars" href="#menu">Menu</a>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<section id="menu">
+						<!-- Links -->
+							<section>
+								<ul class="links">
+									<li>
+										<a href="#">
+											<h3>Lorem ipsum</h3>
+											<p>Feugiat tempus veroeros dolor</p>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<h3>Dolor sit amet</h3>
+											<p>Sed vitae justo condimentum</p>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<h3>Feugiat veroeros</h3>
+											<p>Phasellus sed ultricies mi congue</p>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<h3>Etiam sed consequat</h3>
+											<p>Porta lectus amet ultricies</p>
+										</a>
+									</li>
+								</ul>
+							</section>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="https://github.com/BinaryExcursions/MidiParserSwift" target="_blank" class="fab fa-github" style="font-size: large;">MIDI Parser</a></h2>
+										<p>A straight forward MIDI file parsing project.</p>
+									</div>
+									<div class="meta">
+										<div class="name">Author</div>
+										<a href="https://github.com/binexc" target="_blank" class="author"><span class="name">Jeff Behrbaum</span><img src="images/Hal9000Small.png" alt="" /></a>
+									</div>
+								</header>
+								<p>A Swift open-source MIDI parser. Some useful links that helped me:</p>
+								<ul>
+									<li><a href="https://youtu.be/040BKtnDdg0">youtube: Programming MIDI</a></li>
+									<li><a href="https://github.com/binexc/olcPixelGameEngine/blob/master/Videos/OneLoneCoder_PGE_MIDI.cpp">C++ Example from above video</a></li>
+									<li><a href="https://midimusic.github.io/tech/midispec.html">Spec. w/Explanation</a></li>
+									<li><a href="https://midi.org/">Official MIDI Specs</a></li>
+								</ul>
+									
+								<!-- <span class="image featured"><img src="images/tracks@2x.jpg" alt="game board" /></span> -->
+								<p> This project uses a command-line Swift application to exercise the code which parses a MIDI file. One consideration is that this code when "processing" an event logs and stores information - this is where you'll want to actaully process the event information.</p>
+								<p>The primary code to retreive all the information you'll need from  the parsed file in an object format is as follows:</p>
+
+								<div style="overflow: hidden;">
+									<pre style="display: inline-flex;">
+										<code style="font-size: 0.9rem; font-weight: 550;">
+let midiRecord:MidiRecord = MidiRecord()
+let midiReader:MidiReader = MidiReader()
+											
+guard midiReader.openMidiFile(fileName:filePath) != false else {exit(0)}
+											
+var midiHeader:MidiRecordHeader = MidiRecordHeader()
+var lastIdxRead = midiReader.readMidiRecordHeader(hdr: &midiHeader) + 1
+											
+midiRecord.Header = midiHeader
+let trackInfo:MidiTrack? = nil
+											
+repeat {
+	let trackInfo:MidiTrack? = midiReader.readTrack(startIndex:&lastIdxRead)
+											
+	if let track = trackInfo {
+		midiRecord.appendTrack(track: track)
+	}
+}while(trackInfo != nil)
+										</code>
+									</pre>
+								</div>
+
+								<p>Remember, this is straigh Swift - no additional iOS AV libraries or anything else. I developed it this way for two reasons:</p>
+								<ul>
+									<li>To provide the most straight forward learning process for developers without any magic 3rd party code</li>
+									<li>So that this code could just as easily be incorporated into your iOS, Mac or any other platform you are using the Swift language for</li>
+								</ul>
+
+							</article>
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<ul class="icons">
+							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="#" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
+							<li><a href="https://github.com/BinaryExcursions" target="_blank" class="icon brands fa-github"><span class="label">RSS</span></a></li>
+							<li><a href="mailto: abc@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+						<p class="copyright">&copy; All rights reserved, Binary Excursions LLC.</p>
+					</section>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+	</body>
+</html>

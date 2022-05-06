@@ -1,0 +1,319 @@
+<!DOCTYPE HTML>
+<!--
+	Future Imperfect by Pixelarity
+	pixelarity.com | hello@pixelarity.com
+	License: pixelarity.com/license
+-->
+<html>
+	<head>
+		<title>MIDI Parser</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+	</head>
+
+	<body class="single is-preload">
+
+		<!-- Wrapper -->
+				<!-- Header -->
+					<header id="header">
+						<h1><a href="https://binaryexcursions.github.io/">Github Pages</a></h1>
+						<nav class="links">
+							<ul>
+								<li><a href="index.html">Intro</a></li>
+								<li><a href="project.html">Project</a></li>
+								<li><a href="#">Architecture</a></li>
+								<!-- <li><a href="#">Tempus</a></li>
+								<li><a href="#">Adipiscing</a></li> -->
+							</ul>
+						</nav>
+						<nav class="main">
+							<ul>
+								<!-- <li class="search">
+									<a class="fa-search" href="#search">Search</a>
+									<form id="search" method="get" action="#">
+										<input type="text" name="query" placeholder="Search" />
+									</form>
+								</li> -->
+								<li class="menu">
+									<a class="fa-bars" href="#menu">Menu</a>
+								</li>
+							</ul>
+						</nav>
+					</header>
+
+				<!-- Menu -->
+					<section id="menu">
+						<!-- Links -->
+							<section>
+								<ul class="links">
+									<li>
+										<a href="#">
+											<h3>Lorem ipsum</h3>
+											<p>Feugiat tempus veroeros dolor</p>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<h3>Dolor sit amet</h3>
+											<p>Sed vitae justo condimentum</p>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<h3>Feugiat veroeros</h3>
+											<p>Phasellus sed ultricies mi congue</p>
+										</a>
+									</li>
+									<li>
+										<a href="#">
+											<h3>Etiam sed consequat</h3>
+											<p>Porta lectus amet ultricies</p>
+										</a>
+									</li>
+								</ul>
+							</section>
+					</section>
+
+				<!-- Main -->
+					<div id="main">
+
+						<!-- Post -->
+							<article class="post">
+								<header>
+									<div class="title">
+										<h2><a href="https://github.com/BinaryExcursions/MidiParserSwift" target="_blank" class="fab fa-github" style="font-size: large;">MIDI Parser</a></h2>
+										<p>A straight forward MIDI file parsing project.</p>
+									</div>
+									<div class="meta">
+										<div class="name">Author</div>
+										<a href="https://github.com/binexc" target="_blank" class="author"><span class="name">Jeff Behrbaum</span><img src="images/Hal9000Small.png" alt="" /></a>
+									</div>
+								</header>
+								<p>
+									The architecture of the code base is pretty straight-forward. However, there are a couple of specific technical points which seem to surface 
+									the most trouble for developers just coming to MIDI.  On this page, I'd like to address these two areas in the hopes of helping with some more 
+									specifics.
+								</p>
+								<p>Technical points which may be the most confusing of this whole "new" MIDI thing:</p>
+								<ul>
+									<li> <a href="#vlq">Variable Length Quantity</a></li>
+									<li><a href="#runstat">Running Status</a></li>
+								</ul>
+
+								<a name="vlq"></a>
+								<article>
+									<h2><u>Variable Length Quantity</u></h2>
+									<p>
+										Reading a variable length quantity (VLQ) is a bit strange  but serves a vital purpose - fast data transfer! 
+										To appreciate this and avoid some frustration when dealing with MIDI, keep in mind that the priority of MIDI 
+										is to avoid latency at virtually all costs! What this means is that if it is possible to evaluate 7 bits 
+										per-byte instead of the full 8 - DO IT! AVOID THE EXTRA BIT!!!!!!! This may seem insignificant, but in highly 
+										performant systems - it's HUGE! And MIDI needs to be highly performant in transfering data since the human ear 
+										hears very minute delays.
+									</p>
+									<p>
+										As an example - we'll keep the code simple and straigh forward so it's clear.  Let's start by saying we have a data array of unsigned bytes.
+										Let's say there are a sufficient number of bytes in our data array. If we want to get the first two bytes of our data array into an unsigned 
+										short, we may do something like this (again - this is just one way):
+										<div style="overflow: hidden;">
+											<pre style="display: inline-flex;">
+												<code style="font-size: 0.9rem; font-weight: 550;">
+var sVar:UInt16 = dataArray[0]
+sVar <<= 8
+sVar += dataArray[1]
+												</code>
+											</pre>
+										</div>
+									</p>
+									<p>
+										The above code is a perfectly acceptable way to take individual bytes and place them into another "larger" variable.  
+										However, in the above code segment, we knew 2 things: 1)we were going to take 2 bytes from our data array and 2) every 
+										bit in the byte contributes to the overall value of the larger variable's value - but what happens when we don't know how 
+										many bytes we're going to need and we need to prevent the leading bit from contributing to the value contained in our 
+										larger variable? One way would be to add in a message that says something like [messagetype identifier:number of bytes to read]  
+										However, this just adds to the size of the data we have to transmit - not what MIDI is about. Though we do see messages like 
+										this, MIDI tries to minimize them.
+									</p>
+
+									<p>
+										Instead, what MIDI does is set the leading bit within the byte to indicate if the following byte needs to be evaluated as part of the larger value or not.
+										So, what we now need to do is evaluate that leading bit. And all that means is if we need pull in the next byte or not. ie: if the first bit's value is:
+										<ul>
+											<li>0 - We're done reading for the value, no more bytes need to be read to get your value</li>
+											<li>1 - We read the next byte and associate the last 7 bits as part of the larger value</li>
+										</ul>
+										
+										<strong>NOTE:</strong> the leading bit absolutely must NOT contribute to the value of the larger number! 
+									</p>
+
+									<p>
+										Let's take a look at the issue. We'll break it down into two parts. The first will be evaluating and making sure we clear the initial bit and 
+										next will see how to properly place our smaller bytes into larger values.
+									</p>
+
+									<div style="overflow: hidden;">
+										<pre style="display: inline-flex;">
+											<code style="font-size: 0.9rem; font-weight: 550;">
+var largerVal:UInt32 = 0 //Will explain why UInt32 later
+let ShiftAmount:Int = 7 //We only ever shift by 7 bits - otherwise the leading bit comes into play
+var bReadNext:Bool = true
+var index:Int = 0
+
+repeat {
+	var bVar:UInt8 = dataArray[index]
+	
+	//Let's see if the first bit is set
+	if( (bVar & 0x80) != 0x80 ) {
+		bReadNext = false
+	}
+	else { //Let's clear the leading bit since we know it's set 
+		bVar &= 0x7F //Maintains the integrity of the bits we're interested in
+	}
+
+	largerVal <<= (index * ShiftAmount)
+	largerVal |= bVar //You can simply use '+' but the '|' is just more explicit for understanding
+
+	index += 1
+}while(bReadNext == true)
+
+..//Move on and continue reading from data array at your current index
+											</code>
+										</pre>
+									</div>
+								
+									<p>
+										So why UInt32 as the "larger" value in the code above and not a UInt64 or some other larger value?  
+										Because within MIDI, the numbers we're dealing with are relatively small in terms of computers. 
+										For example, there are only 12 notes and at the high level, 10 octaves. Therefore, the largest number we need to represent any note is 120.
+										Or, when we start talking about time deltas - in microseconds - we're still talking relatively small numbers for a computer to handle when 
+										it comes to typical musical delays - and that is what we're talking about with MIDI. As time deltas are typically the largest values we're
+										talking about within the MIDI stream/files, we need to take a look at what "realistic" time deltas are in today's music. Those delays - not normally
+										days or hours - MAYBE, RARELY minutes, a 4 byte value is more than sufficient to store the largest values we'll encounter within our MIDI data.
+									</p>
+								</article>
+
+								<a name="runstat"></a>
+								<article>
+									<br/>
+									<h2><u>Running Status</u></h2>
+									<p>
+										In order to understand the on-going/running status complexity (it really isn't all that complex - just a bit annoying to learn) we first need to understand the 
+										status byte of our MIDI event messages. It's important to keep in mind that there are many types of MIDI events and some have different status 
+										values organized differently. I bring this up just for you to know about which will make our discussion regarding running status much easier 
+										and less confusing. Therefore, keep in mind that this discussion is really around what's referred to as MIDI channel messages - which are the 
+										most commmon.  The other meta and system message are very easy to identify and we'll discuss Those too and you'll see how easy they are, so for 
+										now, just be aware of them but don't worry about them for now.
+									</p>
+
+									<p>So, with the MIDI messages we're discussing here, the way they work is: <strong>Staus Byte (follow by 1 or 2 data/Information bytes</strong></p>
+
+									<p>
+										The status bytes have very specific values which represent the message you're evaluating. I personnally think "status" byte is a poor naming convention,
+										where I believe "message identify byte" would have been a more appropriate naming - BUT as it is, and will be, it's the "status" byte. So the status byte 
+										informs us of what the information is referencing. Before we take a look at the message's status byte, it is important to note that the single status byte
+										consists of 2 parts - the message ID and the associated channel. There are 16 channels in MIDI which are used to send message to a particular processing 
+										component in the MIDI player. The "nnnn" component of the status byte represents the channel [0 - F]. With that said, below are a couple of examples:
+									</p>
+
+									<table>
+										<tr>
+										  <th>Status Byte (Binary:Hex)</th>
+										  <th>Message Type</th>
+										  <th>Number of following bytes</th>
+										</tr>
+										<tr>
+										  <td>1001nnnn : 0x9n </td>
+										  <td>Note On</td>
+										  <td>2</td>
+										</tr>
+										<tr>
+										  <td>1000nnn : 0x8n</td>
+										  <td>Note Off</td>
+										  <td>2</td>
+										</tr>
+									 </table>
+
+									 <p>
+										 So, the logical sequential parsing thought would go something like (We'll use 'Note On' as example):
+										 <ol>
+											 <li>Read-Byte</li>
+											 <li>Is it a status byte of value 0x9n?</li>
+											 <li>If it is - read two more bytes - process</li>
+											 <li>Repeat...</li>
+										 </ol>
+
+										 And in all fairness, this appears at first glance to make perfectly logical sense - and infact almost all of us developers write code which 
+										 does exactly this on a regular basis. However, now we're dealing with MIDI and we know MIDI must squeeze out every bit of extraneous data. 
+										 Therefore, when we talk about transmitting the absolute minimum amount of data and still being able to maximize our information tranmital - we 
+										 start to realize there's some potential for optimization here.  Also, the folks that came up with MIDI did a nice job minimizing the amount of 
+										 data needed to transmit while providing the maximum amount of information, but that doesn't mean it makes our jobs easier as 
+										 developers - hence <i>"Running Status!"</i>
+									 </p>
+
+									 <p>
+										Sticking with our previous example of "Note On" - let's consider a typical tritone C-Major chord. Here, we have 3 notes, C, E, G. Now when we 
+										take this to MIDI, what we'll ultimately have for each of these three nots is:
+										
+										<ul>
+											<li>Note On: note C - Velocity X</li>
+											<li>Note On: note E - Velocity Y</li>
+											<li>Note On: note G - Velocity Z</li>
+										</ul>
+
+										Similarly:
+
+										<ul>
+											<li>Note Off: note C - Velocity X</li>
+											<li>Note Off: note E - Velocity Y</li>
+											<li>Note Off: note G - Velocity Z</li>
+										</ul>
+
+										<strong>Important Note:</strong> <i>Velocity is basically how hard you hit/strum the note - or how sudden you stop the note.</i>
+
+										<p></p>
+										<p>
+											And now we can see a little more clearly that the "Status" byte is somewhat repetitive - and now that we know MIDI - we know that's BAD!
+										</p>
+
+										<p>
+											Now that we know that's bad - what do we do about it? &nbsp &nbsp Well, we implement the "Running Status" implementation...
+										</p>
+
+										<p>
+											Now our logic becomes:
+										</p>
+
+										<img src="images/RunningStatusLogi.png" alt="Running Status Logic" />
+									 </p>
+
+								</article>
+
+								<!-- <span class="image featured"><img src="images/tracks@2x.jpg" alt="game board" /></span> -->
+								<br/>
+								<hr/>
+								<p>At one point regarding the "Running Status" conversation, there was mention of the C-Major chord. If you're not familar with chord construction - please take a look here: <a href="https://www.musicgateway.com/blog/how-to/chord-music-theory" target="_blank">Chord Construction</a> </p>
+							</article>
+					</div>
+
+				<!-- Footer -->
+					<section id="footer">
+						<ul class="icons">
+							<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+							<li><a href="#" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="#" class="icon brands fa-youtube"><span class="label">YouTube</span></a></li>
+							<li><a href="https://github.com/BinaryExcursions" target="_blank" class="icon brands fa-github"><span class="label">RSS</span></a></li>
+							<li><a href="mailto: abc@gmail.com" class="icon solid fa-envelope"><span class="label">Email</span></a></li>
+						</ul>
+						<p class="copyright">&copy; All rights reserved, Binary Excursions LLC.</p>
+					</section>
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+	</body>
+</html>
