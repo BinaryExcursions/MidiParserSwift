@@ -65,7 +65,7 @@ class Utils
 		return X
 	}
 	
-	//We're just going be here.  I think this really should be a UInt32 - MAX!
+	//I think this really will only ever be a UInt32 - MAX!
 	class func readVariableLengthValue(startIdx:inout Int, data:Data) -> UInt32
 	{
 		guard (startIdx > 0) && (startIdx < data.count)  else {return 0}

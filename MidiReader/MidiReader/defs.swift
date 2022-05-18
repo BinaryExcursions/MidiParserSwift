@@ -358,7 +358,7 @@ enum MidiNote:UInt8, CaseIterable {
 }
 
 //From Appendix 1.4 table 1
-enum MidiInstrumentGeneralFamily:UInt8 {
+enum MidiInstrumentGeneralFamily {
 	case INST_FAMILY_PIANO,
 		  INST_FAMILY_CHROMATIC_PRECUSSION,
 		  INST_FAMILY_ORGAN,
@@ -379,7 +379,7 @@ enum MidiInstrumentGeneralFamily:UInt8 {
 
 //From Appendix 1.4 table 2
 //This is essentially, additional/extra sound information for a given synth sound
-enum MidiInstrumentPatch:UInt16, CaseIterable {
+enum MidiInstrumentPatch {
 	case ACOUSTIC_GRAND_PIANO,
 	BRIGHT_ACOUSTIC_PIANO,
 	ELECTRIC_GRAND_PIANO,
@@ -728,4 +728,3 @@ struct SysRealtimeEvent: Event
 	
 	var eventTimeDelta:UInt32
 }
-
