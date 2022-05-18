@@ -85,7 +85,7 @@ class MidiReader
 		//The below constants are number of byte values
 		let HDR_SIZE:Int = 4
 		let EOT_SIZE:Int = 3 //3 bytes are used for the end of track marker
-		let NUM_BYTES_TRACK_SIZE = 4
+		let NUM_BYTES_TRACK_SIZE:Int = 4
 
 		var idx:Int = startIndex
 
@@ -179,6 +179,9 @@ class MidiReader
 		return (delta:UInt32(deltaTime), numBytesRead:numberOfBytesRead)
 	}
 	
+	//Remember, there are different types of events. So this high level call is here so we can
+	//call the appropriate event parser based on type. The true work to get out all the event
+	//data is done in one of the event parsing classes - not necessarily from here within the reader.
 	private func parseEventData(startIdx:inout Int, timeDelta:UInt32) -> Event?
 	{		
 		guard let fileData = m_FileData else {return nil}

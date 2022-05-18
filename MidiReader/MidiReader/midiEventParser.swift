@@ -27,7 +27,7 @@ class MidiEventParser
 		return midiEvent
 	}
 
-	func parseByteToMajorMidiMessage(messageValue:UInt8, idx:inout Int) -> Event?
+	private func parseByteToMajorMidiMessage(messageValue:UInt8, idx:inout Int) -> Event?
 	{
 		let SYS_COMMON_MSG_CTRl:UInt8 = 0xF0
 		let SYS_DATA_TYPE_CTRL:UInt8 = 0x08
